@@ -25,7 +25,7 @@ export default function App() {
      
      
       <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
-      <Stack.Screen component={SplashScreen} name='SplashScreen' />
+     
         <Stack.Screen name='Home' component={Home} />
 
         <Stack.Screen component={SearchComponent} name='Search' />
@@ -37,7 +37,7 @@ export default function App() {
         <Stack.Screen component={DoUongComponent} name='DoUong' />
         <Stack.Screen component={BanhMiComponent} name='BanhMi' />
         <Stack.Screen component={HealthyComponent} name='Healthy' />
-        
+        <Stack.Screen component={SplashScreen} name='SplashScreen' />
       </Stack.Navigator>
     
 

@@ -19,7 +19,7 @@ const SplashScreen = ({ navigation }) => {
     }, [isLoading, navigation]);
 
     const handleLogin = async () => {
-        navigation.replace('Appnavigator');
+        navigation.replace('Home');
     };
 
     return (
