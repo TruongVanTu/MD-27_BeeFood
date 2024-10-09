@@ -1,6 +1,9 @@
+import React from 'react';
+import 'react-native-gesture-handler';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import SplashScreen from './Screen/SplashScreen';
 import Home from './Screen/Home';
 import { NavigationContainer } from '@react-navigation/native';
 import BanhMiComponent from './Component/BanhMiComponent';
@@ -17,8 +20,12 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
+    
     <NavigationContainer>
-      <Stack.Navigator >
+     
+     
+      <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
+      <Stack.Screen component={SplashScreen} name='SplashScreen' />
         <Stack.Screen name='Home' component={Home} />
 
         <Stack.Screen component={SearchComponent} name='Search' />
@@ -30,7 +37,11 @@ export default function App() {
         <Stack.Screen component={DoUongComponent} name='DoUong' />
         <Stack.Screen component={BanhMiComponent} name='BanhMi' />
         <Stack.Screen component={HealthyComponent} name='Healthy' />
+        
       </Stack.Navigator>
+    
+
+  
     </NavigationContainer>
   );
 }
