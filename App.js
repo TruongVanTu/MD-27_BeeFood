@@ -2,6 +2,7 @@ import React from 'react';
 import 'react-native-gesture-handler';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
+import LoginScreen from './Screen/LoginScreen';
 import { StyleSheet, Text, View } from 'react-native';
 import SplashScreen from './Screen/SplashScreen';
 import Home from './Screen/Home';
@@ -26,6 +27,11 @@ export default function App() {
      
       <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
      
+           <Stack.Screen
+                            name="Login"
+                            component={LoginScreen}
+                            options={{ title: 'HELLO' }}
+                        />
         <Stack.Screen name='Home' component={Home} />
 
         <Stack.Screen component={SearchComponent} name='Search' />
