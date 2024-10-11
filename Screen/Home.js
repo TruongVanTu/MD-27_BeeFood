@@ -228,7 +228,7 @@ const Goiymonan = ({ navigation }) => {
                   Tên món ăn: Bún thịt chó
                 </Text>
                 <Text style={{ paddingBottom: 5, paddingTop: 5, fontWeight: 'bold', color: '#000000' }}>
-                  Nhà hàng: Bún chó : 'Đang cập nhật...'}
+                  Nhà hàng: Bún chó : 'Đang cập nhật...'
                 </Text>
                 <View style={{ flexDirection: 'row' }}>
                   <Image
