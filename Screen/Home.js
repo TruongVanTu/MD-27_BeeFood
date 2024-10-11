@@ -1,6 +1,8 @@
-import { Image, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Dimensions, Image, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
 import { TouchableOpacity } from 'react-native'
+
+const { width, height } = Dimensions.get('window');
 
 const HeaderHome = () =>{
   const [address, setAddress] = useState('Đang lấy vị trí...')
@@ -81,6 +83,82 @@ const HeaderHome = () =>{
   )
 }
 
+const Menu = () => {
+  return (
+    <View>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginLeft: 15 }}>
+          <TouchableOpacity onPress={() => { navigation.navigate('Ganban') }}>
+            <Image source={require('./../Image/ganban.png')} style={{ width: 0.08 * width, height: 0.04 * height }} />
+          </TouchableOpacity>
+
+          <Text style={{ color: '#616161' }}>Món Bò</Text>
+        </View>
+        <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginLeft: 40 }}>
+          <TouchableOpacity onPress={() => { navigation.navigate('Comxuat') }}>
+            <Image source={require('./../Image/comxuat.png')} style={{ width: 0.08 * width, height: 0.04 * height }} />
+          </TouchableOpacity>
+
+          <Text style={{ color: '#616161' }}>Cơm xuất</Text>
+        </View>
+        <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginLeft: 40 }}>
+          <TouchableOpacity onPress={() => { navigation.navigate('BunPho') }}>
+            <Image source={require('./../Image/noodle.png')} style={{ width: 0.08 * width, height: 0.04 * height }} />
+          </TouchableOpacity>
+
+          <Text style={{ color: '#616161' }}>Bún phở</Text>
+        </View>
+        <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginLeft: 40 }}>
+          <TouchableOpacity onPress={() => { navigation.navigate('Chicken') }}>
+            <Image source={require('./../Image/fried_chicken.png')} style={{ width: 0.08 * width, height: 0.04 * height }} />
+          </TouchableOpacity>
+
+          <Text style={{ color: '#616161' }}>Gà rán</Text>
+        </View>
+
+      </View>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', margin: 20 }}>
+          <TouchableOpacity onPress={() => { navigation.navigate('AnVat') }}>
+            <Image source={require('./../Image/snack.png')} style={{ width: 0.08 * width, height: 0.04 * height }} />
+          </TouchableOpacity>
+
+          <Text style={{ color: '#616161' }}>Trà Sữa</Text>
+        </View>
+        <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginLeft: 35 }}>
+          <TouchableOpacity onPress={() => { navigation.navigate('DoUong') }}>
+            <Image source={require('./../Image/milk_tea.png')} style={{ width: 0.08 * width, height: 0.04 * height }} />
+          </TouchableOpacity>
+
+          <Text style={{ color: '#616161' }}>Đồ uống</Text>
+        </View>
+        <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginLeft: 40 }}>
+          <TouchableOpacity onPress={() => { navigation.navigate('BanhMi') }}>
+            <Image source={require('./../Image/burger.png')} style={{ width: 0.08 * width, height: 0.04 * height }} />
+          </TouchableOpacity>
+          <Text style={{ color: '#616161' }}>Bánh mì</Text>
+        </View>
+        <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginLeft: 40 }}>
+          <TouchableOpacity onPress={() =>
+            Toast.show({
+              type: 'error',
+              text1: 'Đang cập nhập thêm món ăn!',
+              visibilityTime: 2000,
+              position: 'bottom'
+            })}>
+            <Image source={require('./../Image/three-dots.png')} style={{ width: 0.07 * width, height: 0.04 * height }} />
+          </TouchableOpacity>
+          <Text style={{ color: '#616161' }}>Đồ Khác</Text>
+
+        </View>
+
+      </View>
+
+    </View>
+
+  )
+}
+
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = React.useCallback(() => {
@@ -98,6 +176,7 @@ const Home = () => {
         }>
 
         <HeaderHome />
+        <Menu />
         
       </ScrollView>
     </View>
