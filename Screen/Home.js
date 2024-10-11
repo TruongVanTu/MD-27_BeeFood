@@ -149,6 +149,104 @@ const Menu = ({ navigation }) => {
   );
 };
 
+const Restaurant = ({ navigation }) => {
+  const [datarestauran, setdatarestauran] = useState([])
+
+  return (
+    <View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 15, marginVertical: 8 }}>
+        <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#616161' }}>Nhà hàng quanh đây</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('AllRestaurant')}>
+          <Text>Xem tất cả</Text>
+        </TouchableOpacity>
+      </View>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View style={{ width: 250, flexDirection: 'row' }}>
+            <TouchableOpacity onPress={() => navigation.navigate('Restaurant')}>
+              <View style={{ marginLeft: 15 }}>
+                <Image source={require('../Image/banner.jpg')} style={{ width: 0.58 * width, height: 0.2 * height, borderTopLeftRadius: 10, borderTopRightRadius: 10 }} />
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#ADD8E6', marginLeft: 15, width: 0.58 * width, height: 0.08 * height }}>
+                <View style={{ flexDirection: 'column', padding: 8 }}>
+                  <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#000000' }}>Bún chó</Text>
+                  <Text style={{ fontWeight: 'bold', color: '#000000' }}>05:00 AM - 11:00 PM</Text>
+                  <Text style={{ fontWeight: 'bold', color: '#000000' }}>Cầu Diễn</Text>
+                </View>
+                <TouchableOpacity onPress={() => navigation.navigate('Restaurant')} style={{ marginLeft: 'auto', backgroundColor: '#FFFFFF', width: 0.06 * width, alignItems: 'center', justifyContent: 'center', height: 0.025 * height, borderRadius: 20, marginTop: 20, marginRight: 10 }} >
+                  <Image source={require('./../Image/right_arrow.png')} style={{ width: 15, height: 15 }} />
+                </TouchableOpacity>
+              </View>
+              
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Restaurant')}>
+              <View style={{ marginLeft: 15 }}>
+                <Image source={require('../Image/banner.jpg')} style={{ width: 0.58 * width, height: 0.2 * height, borderTopLeftRadius: 10, borderTopRightRadius: 10 }} />
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#ADD8E6', marginLeft: 15, width: 0.58 * width, height: 0.08 * height }}>
+                <View style={{ flexDirection: 'column', padding: 8 }}>
+                  <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#000000' }}>Bún chó</Text>
+                  <Text style={{ fontWeight: 'bold', color: '#000000' }}>05:00 AM - 11:00 PM</Text>
+                  <Text style={{ fontWeight: 'bold', color: '#000000' }}>Cầu Diễn</Text>
+                </View>
+                <TouchableOpacity onPress={() => navigation.navigate('Restaurant')} style={{ marginLeft: 'auto', backgroundColor: '#FFFFFF', width: 0.06 * width, alignItems: 'center', justifyContent: 'center', height: 0.025 * height, borderRadius: 20, marginTop: 20, marginRight: 10 }} >
+                  <Image source={require('./../Image/right_arrow.png')} style={{ width: 15, height: 15 }} />
+                </TouchableOpacity>
+              </View>
+              
+            </TouchableOpacity>
+            
+          </View>
+      </ScrollView>
+    </View>
+  )
+}
+
+const Goiymonan = ({ navigation }) => {
+
+  return (
+    <View style={{ margin: 15 }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#616161' }}>
+          Gợi ý dành cho bạn
+        </Text>
+        <TouchableOpacity onPress={() => navigation.navigate('AllProducts')}>
+          <Text>Xem tất cả</Text>
+        </TouchableOpacity>
+      </View>
+      <ScrollView>
+          <View style={{ backgroundColor: '#FFE4C4', marginTop: 8, borderRadius: 10 }}>
+            <TouchableOpacity
+              style={{ margin: 15, flexDirection: 'row', alignItems: 'center' }}
+              onPress={() => navigation.navigate('ProductDetail')}
+            >
+              <Image
+                source={require('../Image/comxuat.png')}
+                style={{ borderWidth: 1, width: width * 0.25, height: width * 0.25, borderRadius: 10 }}
+              />
+              <View style={{ flexDirection: 'column', paddingLeft: 10, marginLeft: 10 }}>
+                <Text style={{ fontWeight: 'bold', fontSize: 15, color: '#000000' }}>
+                  Tên món ăn: Bún thịt chó
+                </Text>
+                <Text style={{ paddingBottom: 5, paddingTop: 5, fontWeight: 'bold', color: '#000000' }}>
+                  Nhà hàng: Bún chó : 'Đang cập nhật...'}
+                </Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <Image
+                    source={require("./../Image/heart_1.png")}
+                    style={{ width: 25, height: 25 }}
+                  />
+                  <Text style={{ color: '#000000', fontWeight: 'bold', marginLeft: 8 }}>
+                    10
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          </View>
+      </ScrollView>
+    </View>
+  );
+};
+
 
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -169,6 +267,9 @@ const Home = () => {
         <HeaderHome />
         <SliderHome />
         <Menu />
+
+        <Restaurant />
+        <Goiymonan />
         
       </ScrollView>
     </View>
@@ -207,4 +308,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
   },
-});
+}); 
