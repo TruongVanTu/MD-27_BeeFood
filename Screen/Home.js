@@ -2,6 +2,8 @@ import { Dimensions, Image, RefreshControl, ScrollView, StyleSheet, Text, TextIn
 import React, { useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import SliderHome from '../Item/SliderHome';
+import Toast from 'react-native-toast-message';
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -248,7 +250,7 @@ const Goiymonan = ({ navigation }) => {
 };
 
 
-const Home = () => {
+const Home = ({navigation}) => {
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -266,9 +268,9 @@ const Home = () => {
 
         <HeaderHome />
         <SliderHome />
-        <Menu />
+        <Menu navigation={navigation}/>
 
-        <Restaurant />
+        <Restaurant navigation={navigation} />
         <Goiymonan />
         
       </ScrollView>
