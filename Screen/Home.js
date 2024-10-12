@@ -271,7 +271,7 @@ const Home = ({navigation}) => {
         <Menu navigation={navigation}/>
 
         <Restaurant navigation={navigation} />
-        <Goiymonan />
+        <Goiymonan navigation={navigation} />
         
       </ScrollView>
     </View>

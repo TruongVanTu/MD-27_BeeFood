@@ -13,6 +13,7 @@ import BanhMiComponent from './Component/BanhMiComponent';
 import AllProducts from './Screen/AllProducts';
 import AllRestaurnat from './Screen/AllRestaurnat';
 import RestaurantScreen from './Screen/RestaurantScreen';
+import ProductDetailScreen from './Screen/ProductDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +30,8 @@ export default function App() {
         <Stack.Screen component={AnVatComponent} name='AnVat' />
         <Stack.Screen component={DoUongComponent} name='DoUong' />
         <Stack.Screen component={BanhMiComponent} name='BanhMi' />
+
+        <Stack.Screen component={ProductDetailScreen} name='ProductDetail' options={{ title: 'Chi tiết sản phẩm' }} />
 
         <Stack.Screen component={AllProducts} name='AllProducts' />
 
