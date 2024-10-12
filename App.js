@@ -14,6 +14,10 @@ import AllProducts from './Screen/AllProducts';
 import AllRestaurnat from './Screen/AllRestaurnat';
 import RestaurantScreen from './Screen/RestaurantScreen';
 import ProductDetailScreen from './Screen/ProductDetailScreen';
+import AppNavigator from './Screen/AppNavigator';
+import OrderScreen from './Screen/OrderScreen';
+import NotificationScreen from './Screen/NotificationScreen';
+import ProfileScreen from './Screen/ProfileScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,6 +25,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name='Appnavigator' component={AppNavigator} />
         <Stack.Screen name='Home' component={Home} />
 
         <Stack.Screen component={GanbanComponent} name='Ganban' />
@@ -30,6 +35,9 @@ export default function App() {
         <Stack.Screen component={AnVatComponent} name='AnVat' />
         <Stack.Screen component={DoUongComponent} name='DoUong' />
         <Stack.Screen component={BanhMiComponent} name='BanhMi' />
+        <Stack.Screen component={OrderScreen} name='Order' />
+        <Stack.Screen component={NotificationScreen} name='Notifications' />
+        <Stack.Screen component={ProfileScreen} name='Profile' />
 
         <Stack.Screen component={ProductDetailScreen} name='ProductDetail' options={{ title: 'Chi tiết sản phẩm' }} />
 
