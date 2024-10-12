@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import Home from './Screen/Home';
+import OrderScreen from './Screen/OrderScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -10,7 +11,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen name='Home' component={Home} />
+        <Stack.Screen name='Order' component={OrderScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
