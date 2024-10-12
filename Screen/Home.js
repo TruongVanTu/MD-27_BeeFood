@@ -49,7 +49,7 @@ const HeaderHome = () => {
         <TouchableOpacity >
           <TextInput
             style={{
-              // width: 0.8 * width,
+              width: 0.8 * width,
               height: 40,
               borderRadius: 15,
               borderWidth: 1,
@@ -64,7 +64,7 @@ const HeaderHome = () => {
 
         <View
           style={{
-            flex: 0.2,
+            flex: 1,
             // width: 40,
             borderRadius: 15,
             marginLeft: 5,
