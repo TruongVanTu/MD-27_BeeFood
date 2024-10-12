@@ -19,7 +19,7 @@ const SplashScreen = ({ navigation }) => {
     }, [isLoading, navigation]);
 
     const handleLogin = async () => {
-        navigation.replace('Home');
+        navigation.replace('Login');
     };
 
     return (
@@ -40,5 +40,7 @@ const styles = StyleSheet.create({
     },
     logo: {
         alignSelf: 'center',
+        width: 300 ,
+        height: 200
     },
 });
