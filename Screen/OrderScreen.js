@@ -7,8 +7,11 @@ const OrderScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
+      <View style={{flexDirection: 'row'}}>
       <Image source={require('./../Image/Logo_BeeFood.png')} style={styles.logo} />
       <Text style={styles.title}>Order Food</Text>
+      </View>
+     
       
       {/* Product Selection Header */}
       <View style={styles.selectionHeader}>

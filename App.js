@@ -12,7 +12,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen name='Search' component={SearchScreen} />
+        <Stack.Screen name='Search' component={OrderScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
