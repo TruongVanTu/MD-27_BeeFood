@@ -54,6 +54,3 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({});
-
-// cong test
-//Sang test
