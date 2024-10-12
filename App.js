@@ -2,6 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import SearchScreen from './Component/SearchScreen';
 import Home from './Screen/Home';
 import AnVatComponent from './Component/AnVatComponent';
 import GanbanComponent from './Component/GanbanComponent';
@@ -24,6 +25,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
+
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name='Appnavigator' component={AppNavigator} />
         <Stack.Screen name='Home' component={Home} />

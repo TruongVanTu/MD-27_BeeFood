@@ -4,7 +4,6 @@ import { TouchableOpacity } from 'react-native'
 import SliderHome from '../Item/SliderHome';
 import Toast from 'react-native-toast-message';
 
-
 const { width, height } = Dimensions.get('window');
 
 const HeaderHome = () =>{
