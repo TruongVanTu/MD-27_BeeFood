@@ -25,7 +25,7 @@ export default function RegisterScreen() {
   
     return (
         <View style={styles.container}>
-            <Image style={styles.logo} source={require('./../Image/logo1.png')} />
+            <Image style={styles.logo} source={require('./../Image/Logo_BeeFood.png')} />
             <TextInput
                 label="Tên đăng nhập"
                 value={username}
@@ -95,9 +95,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     logo: {
-        width: 173,
-        height: 52,
-        marginBottom: 80,
+        width: 150,
+        height: 100,
+        marginBottom: 50,
     },
     input: {
         width: '80%',
