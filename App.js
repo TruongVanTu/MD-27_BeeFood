@@ -3,14 +3,18 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import Home from './Screen/Home';
+import SplashScreen from './Screen/SplashScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
+    
         <Stack.Screen name='Home' component={Home} />
+        <Stack.Screen component={SplashScreen} name='SplashScreen' />
+    r
       </Stack.Navigator>
     </NavigationContainer>
   );
