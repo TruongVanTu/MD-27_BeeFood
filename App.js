@@ -2,8 +2,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import SearchScreen from './Component/SearchScreen';
 import Home from './Screen/Home';
+import OrderScreen from './Screen/OrderScreen';
+
 import AnVatComponent from './Component/AnVatComponent';
 import GanbanComponent from './Component/GanbanComponent';
 import ComxuatComponent from './Component/ComxuatComponent';
@@ -16,7 +17,6 @@ import AllRestaurnat from './Screen/AllRestaurnat';
 import RestaurantScreen from './Screen/RestaurantScreen';
 import ProductDetailScreen from './Screen/ProductDetailScreen';
 import AppNavigator from './Screen/AppNavigator';
-import OrderScreen from './Screen/OrderScreen';
 import NotificationScreen from './Screen/NotificationScreen';
 import ProfileScreen from './Screen/ProfileScreen';
 
@@ -29,7 +29,7 @@ export default function App() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name='Appnavigator' component={AppNavigator} />
         <Stack.Screen name='Home' component={Home} />
-
+        
         <Stack.Screen component={GanbanComponent} name='Ganban' />
         <Stack.Screen component={ComxuatComponent} name='Comxuat' />
         <Stack.Screen component={BunPhoComponent} name='BunPho' />
@@ -56,6 +56,3 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({});
-
-// cong test
-//Sang test
