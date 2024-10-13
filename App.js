@@ -18,17 +18,19 @@ import ProductDetailScreen from './Screen/ProductDetailScreen';
 import AppNavigator from './Screen/AppNavigator';
 import NotificationScreen from './Screen/NotificationScreen';
 import ProfileScreen from './Screen/ProfileScreen';
+import SearchComponent from './Component/SearchComponent';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-        
+
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name='Appnavigator' component={AppNavigator} />
         <Stack.Screen name='Home' component={Home} />
 
+        <Stack.Screen component={SearchComponent} name='Search' />
         <Stack.Screen component={GanbanComponent} name='Ganban' />
         <Stack.Screen component={ComxuatComponent} name='Comxuat' />
         <Stack.Screen component={BunPhoComponent} name='BunPho' />

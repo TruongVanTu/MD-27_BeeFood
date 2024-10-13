@@ -7,7 +7,7 @@ import Toast from 'react-native-toast-message';
 
 const { width, height } = Dimensions.get('window');
 
-const HeaderHome = () => {
+const HeaderHome = ({ navigation }) => {
   const [address, setAddress] = useState('Đang lấy vị trí...')
 
   return (
@@ -46,8 +46,9 @@ const HeaderHome = () => {
       </Text>
 
       <View style={{ flexDirection: 'row' }}>
-        <TouchableOpacity >
+        <TouchableOpacity onPress={() => { navigation.navigate('Search') }}>
           <TextInput
+          onFocus={() => { navigation.navigate('Search') }}
             style={{
               width: 0.8 * width,
               height: 40,
@@ -74,7 +75,7 @@ const HeaderHome = () => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <TouchableOpacity >
+          <TouchableOpacity onPress={() => { navigation.navigate('Search') }} >
             <Image
               source={require('./../Image/search.png')}
               style={{ width: 25, height: 25 }}
@@ -280,7 +281,7 @@ const Home = ({ navigation }) => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
 
-        <HeaderHome />
+        <HeaderHome navigation={navigation} />
         <SliderHome />
         <Menu navigation={navigation} />
 

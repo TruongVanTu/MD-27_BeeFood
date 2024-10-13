@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Icon library
 
-const SearchScreen = () => {
+const SearchComponent = ( { navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Tìm kiếm</Text>
@@ -53,4 +53,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchScreen;
+export default SearchComponent;
