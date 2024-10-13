@@ -61,7 +61,7 @@ export default function LoginScreen() {
                     style={styles.passwordIcon}
                 />
             </View>
-            <Button mode="contained"  style={styles.btn_login}>
+            <Button mode="contained" onPress={() => navigation.navigate('Home')}  style={styles.btn_login}>
                 ĐĂNG NHẬP
             </Button>
             <Text style={styles.registerText}>
