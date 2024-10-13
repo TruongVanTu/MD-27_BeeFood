@@ -20,10 +20,9 @@ import AppNavigator from './Screen/AppNavigator';
 import NotificationScreen from './Screen/NotificationScreen';
 import ProfileScreen from './Screen/ProfileScreen';
 import SearchComponent from './Component/SearchComponent';
+import RegisterScreen from './Screen/RegisterScreen';
 import SplashScreen from './Screen/SplashScreen';
 import LoginScreen from './Screen/LoginScreen';
-import RegisterScreen from './Screen/RegisterScreen';
-
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -36,7 +35,7 @@ export default function App() {
                             component={LoginScreen}
                             options={{ title: 'HELLO' }}
                         />
-                         <Stack.Screen
+                        <Stack.Screen
                             name="Register"
                             component={RegisterScreen}
                             options={{ title: 'Đăng ký' }}
@@ -56,7 +55,7 @@ export default function App() {
         <Stack.Screen component={OrderScreen} name='Order' />
         <Stack.Screen component={NotificationScreen} name='Notifications' />
         <Stack.Screen component={ProfileScreen} name='Profile' />
-
+  
         <Stack.Screen component={ProductDetailScreen} name='ProductDetail' options={{ title: 'Chi tiết sản phẩm' }} />
 
         <Stack.Screen component={AllProducts} name='AllProducts' />
@@ -64,7 +63,7 @@ export default function App() {
         <Stack.Screen component={RestaurantScreen} name='Restaurant' screenOptions={{
           unmountOnBlur: true,
         }} />
-           <Stack.Screen component={SplashScreen} name='SplashScreen' />
+          <Stack.Screen component={SplashScreen} name='SplashScreen' />
         <Stack.Screen component={AllRestaurnat} name='AllRestaurant' />
       </Stack.Navigator>
     </NavigationContainer>
