@@ -21,6 +21,7 @@ import NotificationScreen from './Screen/NotificationScreen';
 import ProfileScreen from './Screen/ProfileScreen';
 import SearchComponent from './Component/SearchComponent';
 import SplashScreen from './Screen/SplashScreen';
+import LoginScreen from './Screen/LoginScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +30,11 @@ export default function App() {
     <NavigationContainer>
 
       <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
+      <Stack.Screen
+                            name="Login"
+                            component={LoginScreen}
+                            options={{ title: 'HELLO' }}
+                        />
         <Stack.Screen name='Appnavigator' component={AppNavigator} />
         <Stack.Screen name='Home' component={Home} />
 
