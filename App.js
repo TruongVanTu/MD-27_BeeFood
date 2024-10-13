@@ -20,6 +20,7 @@ import AppNavigator from './Screen/AppNavigator';
 import NotificationScreen from './Screen/NotificationScreen';
 import ProfileScreen from './Screen/ProfileScreen';
 import SearchComponent from './Component/SearchComponent';
+import SplashScreen from './Screen/SplashScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,7 +28,7 @@ export default function App() {
   return (
     <NavigationContainer>
 
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
         <Stack.Screen name='Appnavigator' component={AppNavigator} />
         <Stack.Screen name='Home' component={Home} />
 
@@ -51,7 +52,7 @@ export default function App() {
         <Stack.Screen component={RestaurantScreen} name='Restaurant' screenOptions={{
           unmountOnBlur: true,
         }} />
-
+           <Stack.Screen component={SplashScreen} name='SplashScreen' />
         <Stack.Screen component={AllRestaurnat} name='AllRestaurant' />
       </Stack.Navigator>
     </NavigationContainer>
