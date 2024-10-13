@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import Home from './Screen/Home';
 import OrderScreen from './Screen/OrderScreen';
+
 import AnVatComponent from './Component/AnVatComponent';
 import GanbanComponent from './Component/GanbanComponent';
 import ComxuatComponent from './Component/ComxuatComponent';
@@ -31,6 +32,7 @@ export default function App() {
         <Stack.Screen name='Home' component={Home} />
 
         <Stack.Screen component={SearchComponent} name='Search' />
+
         <Stack.Screen component={GanbanComponent} name='Ganban' />
         <Stack.Screen component={ComxuatComponent} name='Comxuat' />
         <Stack.Screen component={BunPhoComponent} name='BunPho' />
