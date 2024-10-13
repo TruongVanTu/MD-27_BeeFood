@@ -22,6 +22,7 @@ import ProfileScreen from './Screen/ProfileScreen';
 import SearchComponent from './Component/SearchComponent';
 import SplashScreen from './Screen/SplashScreen';
 import LoginScreen from './Screen/LoginScreen';
+import RegisterScreen from './Screen/RegisterScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +35,11 @@ export default function App() {
                             name="Login"
                             component={LoginScreen}
                             options={{ title: 'HELLO' }}
+                        />
+                         <Stack.Screen
+                            name="Register"
+                            component={RegisterScreen}
+                            options={{ title: 'Đăng ký' }}
                         />
         <Stack.Screen name='Appnavigator' component={AppNavigator} />
         <Stack.Screen name='Home' component={Home} />
