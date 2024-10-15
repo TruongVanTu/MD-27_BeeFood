@@ -1,35 +1,75 @@
 import { Dimensions, Image, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react';
 import { TouchableOpacity } from 'react-native'
 import SliderHome from '../Item/SliderHome';
 import Toast from 'react-native-toast-message';
+import * as Location from 'expo-location'; // Import Location từ expo-location
 
 const { width, height } = Dimensions.get('window');
 
 const HeaderHome = ({ navigation }) => {
   const [address, setAddress] = useState('Đang lấy vị trí...')
 
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setAddress('Quyền truy cập vị trí bị từ chối.');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      let reverseGeocode = await Location.reverseGeocodeAsync(location.coords);
+      if (reverseGeocode.length > 0) {
+        let addr = reverseGeocode[0];
+        let fullAddress = `${addr.name || ''}, ${addr.subregion || ''}, ${addr.region || ''}, ${addr.country || ''}`;
+        setAddress(fullAddress.replace(/, ,/g, ',').replace(/,,/g, ',').trim());
+      }
+    })();
+  }, []);
+
+
+
   return (
     <View style={{ marginTop: 30 }}>
-      <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+      <View style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
+        backgroundColor: '#f5f5f5',
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 4,
+        elevation: 3,
+        marginVertical: 10
+      }}>
         <Image
           source={require('./../Image/placeholder.png')}
-          style={{ width: 30, height: 30, margin: 15 }}
+          style={{
+            width: 30,
+            height: 30,
+            marginRight: 10
+          }}
         />
 
-        <Text style={{ fontSize: 13, fontWeight: 'bold', color: '#616161' }}>
+        <Text style={{ fontSize: 14, fontWeight: '500', color: '#424242', flexShrink: 1 }}>
           {address}
         </Text>
 
         <TouchableOpacity
           style={{
-            justifyContent: 'space-between',
-            marginLeft: 'auto',
-            margin: 15,
+            marginLeft: 'auto', // Đẩy logo về cuối dòng
+            paddingLeft: 10,
           }}>
           <Image
             source={require('./../Image/Logo_BeeFood.png')}
-            style={{ width: 50, height: 50 }}
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 20
+            }}
           />
         </TouchableOpacity>
       </View>
@@ -40,14 +80,20 @@ const HeaderHome = ({ navigation }) => {
           color: '#319AB4',
           fontWeight: 'bold',
           marginStart: 15,
+          marginTop: 20, // Thêm khoảng cách trên cho thoáng
+          textAlign: 'center'
         }}>
         Welcome to BeeFood!
       </Text>
 
-      <View style={{ flexDirection: 'row' }}>
+      <View style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 20,
+      }}>
         <TouchableOpacity onPress={() => { navigation.navigate('Search') }}>
           <TextInput
-          onFocus={() => { navigation.navigate('Search') }}
+            onFocus={() => { navigation.navigate('Search') }}
             style={{
               width: 0.8 * width,
               height: 40,
