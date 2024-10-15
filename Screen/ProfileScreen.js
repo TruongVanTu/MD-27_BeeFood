@@ -36,10 +36,15 @@ const ProfileScreen = ({ route, navigation }) => {
     navigation.replace('Login');
   }
   const handleLogout = async () => {
-    await AsyncStorage.setItem('isLogin', 'false');
-    await AsyncStorage.removeItem('_id');
-    navigation.navigate('Home');
-  }
+    try {
+      await AsyncStorage.removeItem('username'); // Xóa username khỏi AsyncStorage
+      setIsLoggedIn(false);
+      setUsername('');
+      navigation.navigate('Home');
+    } catch (error) {
+      console.error('Lỗi khi đăng xuất', error);
+    }
+  };
   const handleWalletPress = () => {
     // Hiển thị thông báo toast
     Toast.show({
