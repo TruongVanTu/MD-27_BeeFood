@@ -24,6 +24,7 @@ import RegisterScreen from './Screen/RegisterScreen';
 import SplashScreen from './Screen/SplashScreen';
 import LoginScreen from './Screen/LoginScreen';
 import ProductsFavorite from './Screen/ProductsFavorite';
+import PayScreen from './Screen/PayScreen';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -61,6 +62,7 @@ export default function App() {
         <Stack.Screen component={ProductDetailScreen} name='ProductDetail' options={{ title: 'Chi tiết sản phẩm' }} />
 
         <Stack.Screen component={AllProducts} name='AllProducts' />
+        <Stack.Screen component={PayScreen} name='PayScreen' />
 
         <Stack.Screen component={RestaurantScreen} name='Restaurant' screenOptions={{
           unmountOnBlur: true,

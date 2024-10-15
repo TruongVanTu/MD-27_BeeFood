@@ -11,7 +11,43 @@ const OrderScreen = ({ navigation, route }) => {
   ]);
   const [selectallProducts, setSelectAllProducts] = useState(false)
   const [totalPrice, setTotalPrice] = useState(0);
+  const [dataUid, setDataUid] = useState('');
 
+
+  const handleCheckoutPress = () => {
+    if (products.length === 0) {
+      Alert.alert(
+        'Yêu Cầu',
+        'Vui lòng thêm món vào giỏ hàng! Hãy đến của hàng để gọi món ngay thôi nào!',
+        [
+          { text: 'Home', onPress: () => navigation.navigate('Home') }, // Replace 'HomeScreen' with the actual home screen route name
+          { text: 'Cancel', style: 'cancel' },
+        ],
+      );
+      return
+    }
+    checkout();
+
+  };
+  const checkout = () => {
+    // Create an array of product details
+    // console.log('Checkout', products);
+
+    const areAllChecked = products.every((product, index, array) => product.ischecked === false
+
+    )
+
+    console.log("dataa allllllllllllsdasdasdhahsdasjd", areAllChecked);
+
+    if (areAllChecked == true) {
+      alert("vui lòng lựa chọn món ăn để thanh toán")
+      return
+    }
+    const selectedProducts = products.filter((product) => product.ischecked);
+    navigation.navigate('PayScreen', { products: selectedProducts, dataUid });
+
+
+  };
 
   const toggleProductSelection = (index) => {
     const updatedProducts = [...products];
@@ -155,7 +191,7 @@ const OrderScreen = ({ navigation, route }) => {
       </ScrollView>
       <View style={styles.bottomRow}>
         <Text style={styles.totalPrice}>Total: {totalPrice} VND</Text>
-        <TouchableOpacity style={[styles.button, styles.bottomButton]}>
+        <TouchableOpacity onPress={handleCheckoutPress} style={[styles.button, styles.bottomButton]}>
           <Text style={styles.buttonText}>Thanh toán</Text>
         </TouchableOpacity>
       </View>
