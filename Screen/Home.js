@@ -86,11 +86,9 @@ const HeaderHome = ({ navigation }) => {
         Welcome to BeeFood!
       </Text>
 
-      <View style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginVertical: 20,
-      }}>
+      <View style={{flexDirection: 'row', 
+    alignItems: 'center', 
+    marginVertical: 20, }}>
         <TouchableOpacity onPress={() => { navigation.navigate('Search') }}>
           <TextInput
             onFocus={() => { navigation.navigate('Search') }}

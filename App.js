@@ -25,6 +25,8 @@ import SplashScreen from './Screen/SplashScreen';
 import LoginScreen from './Screen/LoginScreen';
 import ProductsFavorite from './Screen/ProductsFavorite';
 import PayScreen from './Screen/PayScreen';
+import HistoryScreen from './Screen/HistoryScreen';
+import Toast from 'react-native-toast-message';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -63,6 +65,7 @@ export default function App() {
 
         <Stack.Screen component={AllProducts} name='AllProducts' />
         <Stack.Screen component={PayScreen} name='PayScreen' />
+        <Stack.Screen component={HistoryScreen} name='lichsu' />
 
         <Stack.Screen component={RestaurantScreen} name='Restaurant' screenOptions={{
           unmountOnBlur: true,
@@ -70,6 +73,7 @@ export default function App() {
         <Stack.Screen component={SplashScreen} name='SplashScreen' />
         <Stack.Screen component={AllRestaurnat} name='AllRestaurant' />
       </Stack.Navigator>
+      <Toast />
     </NavigationContainer>
   );
 }

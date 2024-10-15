@@ -1,10 +1,10 @@
-import React, { useState,useEffect  } from 'react';
-import { View, Text, StyleSheet, Image, BackHandler } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, BackHandler, Alert } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { ToastAndroid } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { URL } from '../const/const';
 
 
@@ -17,24 +17,38 @@ export default function LoginScreen() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
     const navigation = useNavigation();
-    
+
     useEffect(() => {
         const backAction = () => {
-          console.log('back');
-          navigation.replace('Appnavigator')
-          return true;
+            console.log('back');
+            navigation.replace('Appnavigator')
+            return true;
         };
-    
-        const backHandler = BackHandler.addEventListener(
-          'hardwareBackPress',
-          backAction,
-        );
-    
-        return () => backHandler.remove();
-      }, []);
-    
 
-   
+        const backHandler = BackHandler.addEventListener(
+            'hardwareBackPress',
+            backAction,
+        );
+
+        return () => backHandler.remove();
+    }, []);
+
+    const handleLogin = async () => {
+        if (username === 'user' && password === '12345') {
+            try {
+                // Lưu username vào AsyncStorage
+                await AsyncStorage.setItem('username', username);
+                // Điều hướng đến Appnavigator hoặc màn hình chính
+                navigation.navigate('Appnavigator');
+            } catch (error) {
+                console.error('Lỗi khi lưu username vào AsyncStorage', error);
+            }
+        } else {
+            Alert.alert("Tên đăng nhập hoặc mật khẩu không chính xác");
+        }
+    };
+
+
     return (
         <View style={styles.container}>
             <Image style={styles.logo} source={require('./../Image/Logo_BeeFood.png')} />
@@ -61,7 +75,7 @@ export default function LoginScreen() {
                     style={styles.passwordIcon}
                 />
             </View>
-            <Button mode="contained" onPress={() => navigation.navigate('Appnavigator')}  style={styles.btn_login}>
+            <Button mode="contained" onPress={() => handleLogin()} style={styles.btn_login}>
                 ĐĂNG NHẬP
             </Button>
             <Text style={styles.registerText}>
