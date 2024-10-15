@@ -23,6 +23,7 @@ import SearchComponent from './Component/SearchComponent';
 import RegisterScreen from './Screen/RegisterScreen';
 import SplashScreen from './Screen/SplashScreen';
 import LoginScreen from './Screen/LoginScreen';
+import ProductsFavorite from './Screen/ProductsFavorite';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -30,16 +31,16 @@ export default function App() {
     <NavigationContainer>
 
       <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
-      <Stack.Screen
-                            name="Login"
-                            component={LoginScreen}
-                            options={{ title: 'HELLO' }}
-                        />
-                        <Stack.Screen
-                            name="Register"
-                            component={RegisterScreen}
-                            options={{ title: 'Đăng ký' }}
-                        />
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ title: 'HELLO' }}
+        />
+        <Stack.Screen
+          name="Register"
+          component={RegisterScreen}
+          options={{ title: 'Đăng ký' }}
+        />
         <Stack.Screen name='Appnavigator' component={AppNavigator} />
         <Stack.Screen name='Home' component={Home} />
 
@@ -55,7 +56,8 @@ export default function App() {
         <Stack.Screen component={OrderScreen} name='Order' />
         <Stack.Screen component={NotificationScreen} name='Notifications' />
         <Stack.Screen component={ProfileScreen} name='Profile' />
-  
+        <Stack.Screen component={ProductsFavorite} name='ProductFavoriteScreen' />
+
         <Stack.Screen component={ProductDetailScreen} name='ProductDetail' options={{ title: 'Chi tiết sản phẩm' }} />
 
         <Stack.Screen component={AllProducts} name='AllProducts' />
@@ -63,7 +65,7 @@ export default function App() {
         <Stack.Screen component={RestaurantScreen} name='Restaurant' screenOptions={{
           unmountOnBlur: true,
         }} />
-          <Stack.Screen component={SplashScreen} name='SplashScreen' />
+        <Stack.Screen component={SplashScreen} name='SplashScreen' />
         <Stack.Screen component={AllRestaurnat} name='AllRestaurant' />
       </Stack.Navigator>
     </NavigationContainer>
