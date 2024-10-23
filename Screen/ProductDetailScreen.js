@@ -1,7 +1,8 @@
 import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 
-const ProductDetailScreen = () => {
+const ProductDetailScreen = ({ navigation, route }) => {
+    const { product , type} = route.params;
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.container}>

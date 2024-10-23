@@ -1,17 +1,59 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Image, Platform, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Image, Platform, ScrollView, Alert } from 'react-native';
 import { CheckBox } from 'react-native-elements';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 const OrderScreen = ({ navigation, route }) => {
   const [products, setProducts] = useState([
     {
-      name: 'Phở gà', price: 10000, quantity: 1, image: 'https://www.huongnghiepaau.com/wp-content/uploads/2017/08/cach-nau-pho-ga-ngon.jpg'
+      _id: 1, name: 'Phở gà', price: 10000, quantity: 1, image: 'https://www.huongnghiepaau.com/wp-content/uploads/2017/08/cach-nau-pho-ga-ngon.jpg'
     }
   ]);
   const [selectallProducts, setSelectAllProducts] = useState(false)
   const [totalPrice, setTotalPrice] = useState(0);
+  const [dataUid, setDataUid] = useState('');
 
+
+  useEffect(() => {
+    calculateTotalPrice();
+  }, [products]);
+
+  const handleCheckoutPress = () => {
+    if (products.length === 0) {
+      Alert.alert(
+        'Yêu Cầu',
+        'Vui lòng thêm món vào giỏ hàng! Hãy đến của hàng để gọi món ngay thôi nào!',
+        [
+          { text: 'Home', onPress: () => navigation.navigate('Home') }, // Replace 'HomeScreen' with the actual home screen route name
+          { text: 'Cancel', style: 'cancel' },
+        ],
+      );
+      return
+    }
+    checkout();
+
+  };
+  const checkout = () => {
+    // Create an array of product details
+    // console.log('Checkout', products);
+
+    const areAllChecked = products.every((product, index, array) => product.ischecked === false
+
+    )
+
+    console.log("dataa allllllllllllsdasdasdhahsdasjd", areAllChecked);
+
+    if (areAllChecked == true) {
+      alert("vui lòng lựa chọn món ăn để thanh toán")
+      return
+    }
+    const selectedProducts = products.filter((product) => product.ischecked);
+    navigation.navigate('PayScreen', { products: selectedProducts, dataUid });
+
+
+  };
 
   const toggleProductSelection = (index) => {
     const updatedProducts = [...products];
@@ -22,7 +64,6 @@ const OrderScreen = ({ navigation, route }) => {
     setProducts(updatedProducts);
 
     const areAllChecked = updatedProducts.every((product, index, array) => product.ischecked === true
-
     )
 
     if (areAllChecked == true) {
@@ -42,12 +83,105 @@ const OrderScreen = ({ navigation, route }) => {
           total += (product.price * product.quantity);
         }
       });
-
-
-
       setTotalPrice(total);
     }
   };
+
+  const updateSelectAllProducts = () => {
+
+    if (products.length == 0) {
+      alert("không có sản phẩm trong giỏ hàng")
+      return
+    }
+    const updatedProducts = products.map((product) => ({
+      ...product,
+      ischecked: !selectallProducts,
+    }));
+    setProducts(updatedProducts);
+    setSelectAllProducts(!selectallProducts);
+  };
+
+  const deleteProduct = (product) => {
+    Alert.alert(
+      'Delete Product',
+      'Do you want to remove this item from the cart?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: () => {
+            console.log(product._id)
+            deleteOrder(product._id)
+
+            calculateTotalPrice()
+          },
+        },
+      ]
+    );
+  };
+
+  const deleteOrder = async (orderId) => {
+    try {
+      // Giả lập hành động xóa đơn hàng mà không gọi API
+      console.log(`Xóa đơn hàng có ID: ${products._id}`);
+
+      // Sau khi "xóa", bạn có thể gọi hàm fetchDataOder để cập nhật danh sách đơn hàng
+      fetchDataOder();
+
+      // Nếu cần, bạn có thể thông báo cho người dùng về việc đã xóa thành công
+      // alert('Đơn hàng đã được xóa thành công!');
+
+    } catch (error) {
+      console.error(error); // Xử lý lỗi nếu có vấn đề xảy ra
+      // Bạn có thể thông báo lỗi cho người dùng
+      // alert('Đã có lỗi xảy ra trong quá trình xóa đơn hàng.');
+    }
+  };
+
+  const fetchDataOder = async () => {
+    try {
+      // Lấy dữ liệu từ AsyncStorage
+      const storedData = await AsyncStorage.getItem('_id');
+
+      if (!storedData) {
+        console.error('Không tìm thấy ID người dùng trong AsyncStorage');
+        return;
+      }
+
+      // Dữ liệu giả lập thay vì gọi API
+      const jsonData = [
+        {
+          _id: 1, name: 'Phở gà', price: 10000, quantity: 1, image: 'https://www.huongnghiepaau.com/wp-content/uploads/2017/08/cach-nau-pho-ga-ngon.jpg'
+        },
+        {
+          _id: 1, name: 'Phở gà', price: 10000, quantity: 1, image: 'https://www.huongnghiepaau.com/wp-content/uploads/2017/08/cach-nau-pho-ga-ngon.jpg'
+        }, {
+          _id: 1, name: 'Phở gà', price: 10000, quantity: 1, image: 'https://www.huongnghiepaau.com/wp-content/uploads/2017/08/cach-nau-pho-ga-ngon.jpg'
+        }
+      ];
+
+      // Lọc dữ liệu theo userId được lưu trữ
+      const datafilter = jsonData.filter((obj) => obj.userId === storedData);
+
+      // Cập nhật danh sách sản phẩm với trạng thái 'ischecked' mặc định là false
+      const updatedProducts = datafilter.map((product) => ({
+        ...product,
+        ischecked: false,
+      }));
+
+      // Log dữ liệu để kiểm tra
+      console.log('Dữ liệu đã lọc:', updatedProducts);
+
+      // Cập nhật state sản phẩm
+      setProducts(updatedProducts);
+    } catch (error) {
+      console.error('Lỗi khi lấy dữ liệu đơn hàng:', error);
+    }
+  };
+
 
   const incrementQuantity = async (product, index) => {
     try {
@@ -117,6 +251,7 @@ const OrderScreen = ({ navigation, route }) => {
           <Text style={styles.sectionTitle}>Select all</Text>
           <CheckBox
             checked={selectallProducts}
+            onPress={() => updateSelectAllProducts()}
           />
         </View>
       </View>
@@ -144,7 +279,7 @@ const OrderScreen = ({ navigation, route }) => {
               </TouchableOpacity>
             </View>
             <View style={styles.deleteButtonContainer}>
-              <TouchableOpacity >
+              <TouchableOpacity onPress={() => deleteProduct(product)} >
                 <Image source={require('./../Image/delete-icon.png')} style={styles.icon} />
               </TouchableOpacity>
             </View>
@@ -155,7 +290,7 @@ const OrderScreen = ({ navigation, route }) => {
       </ScrollView>
       <View style={styles.bottomRow}>
         <Text style={styles.totalPrice}>Total: {totalPrice} VND</Text>
-        <TouchableOpacity style={[styles.button, styles.bottomButton]}>
+        <TouchableOpacity onPress={handleCheckoutPress} style={[styles.button, styles.bottomButton]}>
           <Text style={styles.buttonText}>Thanh toán</Text>
         </TouchableOpacity>
       </View>
