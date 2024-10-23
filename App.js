@@ -18,11 +18,12 @@ import RestaurantScreen from './Screen/RestaurantScreen';
 import ProductDetailScreen from './Screen/ProductDetailScreen';
 import AppNavigator from './Screen/AppNavigator';
 import NotificationScreen from './Screen/NotificationScreen';
-import ProfileScreen from './Screen/ProfileScreen';
+import ProfileScreen from './Screen/ProfileScreen';                                  
 import SearchComponent from './Component/SearchComponent';
 import RegisterScreen from './Screen/RegisterScreen';
 import SplashScreen from './Screen/SplashScreen';
 import LoginScreen from './Screen/LoginScreen';
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
