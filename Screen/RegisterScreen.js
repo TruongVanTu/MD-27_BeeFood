@@ -22,7 +22,82 @@ export default function RegisterScreen() {
 
     const navigation = useNavigation();
 
-  
+    const handleRegister = async () => {
+
+        const trimmedUsername = username.trim();
+        const trimmedPhone = phone.trim();
+        const trimmedPassword = password.trim();
+        const trimmedRepassword = rePassword.trim();
+
+
+        if (trimmedUsername == "") {
+            setValidateUser('Vui lòng không được bỏ trống!!');
+            return;
+        } else {
+            setValidateUser('');
+        }
+
+        if (trimmedUsername.length < 3) {
+            setValidateUser('Tên đăng nhập không hợp lệ');
+            return;
+        } else {
+            setValidateUser('');
+        }
+
+        if (trimmedPhone == "") {
+            setValidatePhone('Số điện thoại không được để trống');
+            return;
+        } else {
+            setValidatePhone('');
+        }
+        // Validate phone number
+        const phoneRegex = /^[0-9]{10}$/;
+        if (!phoneRegex.test(phone)) {
+            setValidatePhone('Số điện thoại không hợp lệ');
+            return;
+        } else {
+            setValidatePhone('');
+        }
+
+        //mật khẩu
+        if (trimmedPassword =="") {
+            setValidatePass('Mật khẩu không được để trống!');
+            return;
+        } else {
+            setValidatePass('');
+        }
+        if (trimmedPassword.length < 2) {
+            setValidatePass('Mật khẩu không hợp lệ!');
+            return;
+        } else {
+            setValidatePass('');
+        }
+
+        //xác nhận mật khẩu
+        if (rePassword == "") {
+            setValidateRepass('Bạn chưa xác nhận mật khẩu');
+            return;
+        } else {
+            setValidateRepass('');
+        }
+        if (rePassword !== trimmedPassword) {
+            setValidateRepass('Mật khẩu nhập lại không khớp');
+            
+            return;
+        } else {
+            setValidateRepass('');
+        }
+        try {
+            // Nếu có API gọi đăng ký thì gọi ở đây
+            // await registerUser(trimmedUsername, trimmedPhone, trimmedPassword);
+    
+            // Điều hướng sau khi đăng ký thành công
+            navigation.navigate('Login'); 
+        } catch (error) {
+            console.log('Error during registration:', error);
+        }
+      
+    };
     return (
         <View style={styles.container}>
             <Image style={styles.logo} source={require('./../Image/Logo_BeeFood.png')} />
@@ -79,7 +154,7 @@ export default function RegisterScreen() {
             {validaRepass !== '' && <Text style={styles.errorText}>{validaRepass}</Text>}
             <Button
                 mode="contained"
-                onPress={() => navigation.navigate('Login')}
+                onPress={(handleRegister) }
                 style={styles.btn_register}
             >
                 ĐĂNG KÝ
