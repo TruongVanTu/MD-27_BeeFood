@@ -314,7 +314,7 @@ const Home = ({ navigation }) => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
         <SliderHome />
-        <View style={styles.bgr}>
+        <View style={{backgroundColor:'white'}}>
           <Menu navigation={navigation} />
         </View>
         <View style={styles.bgr}>
@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    paddingVertical: 20,
+    paddingVertical: 10,
   },
   card: {
     backgroundColor: '#fff',
@@ -364,7 +364,6 @@ const styles = StyleSheet.create({
   },
   bgr: {
     backgroundColor: 'white',
-    marginTop: 12,
-    marginBottom: 12
+    marginTop: 12
   }
 }); 
