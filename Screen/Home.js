@@ -262,7 +262,7 @@ const Goiymonan = ({ navigation }) => {
         {datamonangoiy.map((data, index) => (
           <View key={data._id || index} style={{ backgroundColor: 'white', marginBottom: 10 }}>
             <TouchableOpacity
-              style={{ margin: 15, flexDirection: 'row', alignItems: 'center' }}
+              style={{ margin: 15, flexDirection: 'row' }}
               onPress={() => navigation.navigate('ProductDetail', { product: data })}
             >
               <Image
@@ -270,18 +270,18 @@ const Goiymonan = ({ navigation }) => {
                 style={{ width: width * 0.25, height: width * 0.25 }}
               />
               <View style={{ flexDirection: 'column', paddingLeft: 10, marginLeft: 10 }}>
-                <Text style={{ fontWeight: 'bold', fontSize: 15, color: '#000000' }}>
+                <Text style={{fontWeight:'600',  fontSize: 15, color: '#000000', marginTop:5 }}>
                   Tên món ăn: {truncateString(data.name, 13)}
                 </Text>
-                <Text style={{ paddingBottom: 5, paddingTop: 5, fontWeight: 'bold', color: '#000000' }}>
+                <Text style={{ paddingBottom: 5, paddingTop: 5, fontWeight: '600', color: '#000000' }}>
                   Nhà hàng: {data.restaurantId && data.restaurantId.name ? truncateString(data.restaurantId.name, 18) : 'Đang cập nhật...'}
                 </Text>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{ flexDirection: 'row', alignItems:'center' }}>
                   <Image
                     source={require("./../Image/heart_1.png")}
-                    style={{ width: 25, height: 25 }}
+                    style={{ width: 20, height: 20 }}
                   />
-                  <Text style={{ color: '#000000', fontWeight: 'bold', marginLeft: 8 }}>
+                  <Text style={{ color: '#000000', fontWeight: '600', marginLeft: 8}}>
                     {data.likeCount}
                   </Text>
                 </View>
