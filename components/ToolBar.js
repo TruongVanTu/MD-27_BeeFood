@@ -15,7 +15,6 @@ const ToolBar = ({ title, onBackPress }) => {
 const styles = StyleSheet.create({
     toolbar: {
         height: 60,
-        marginTop: 30,
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 10,
