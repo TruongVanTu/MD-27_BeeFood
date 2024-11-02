@@ -4,6 +4,8 @@ import { TouchableOpacity } from 'react-native'
 import SliderHome from '../Item/SliderHome';
 import Toast from 'react-native-toast-message';
 import * as Location from 'expo-location'; // Import Location từ expo-location
+import { URL } from '../const/const';
+import { useFocusEffect } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -196,18 +198,23 @@ const Menu = ({ navigation }) => {
 };
 
 const Restaurant = ({ navigation }) => {
-  const [datarestauran, setdatarestauran] = useState([
-    {
-      _id: 1, name: 'Nhà Hàng', timeon: '05:00', timeoff: '22:00', adress: 'Hà Nội', image: 'https://3adesign.vn/wp-content/uploads/trang-tri-nha-hang-thiet-ke-chi-phi-va-mau-thiet-ke-dep-hien-nay-2.jpg'
-    },
-    {
-      _id: 2, name: 'Nhà Hàng', timeon: '05:00', timeoff: '22:00', adress: 'Hà Nội', image: 'https://3adesign.vn/wp-content/uploads/trang-tri-nha-hang-thiet-ke-chi-phi-va-mau-thiet-ke-dep-hien-nay-2.jpg'
-    }, {
-      _id: 3, name: 'Nhà Hàng', timeon: '05:00', timeoff: '22:00', adress: 'Hà Nội', image: 'https://3adesign.vn/wp-content/uploads/trang-tri-nha-hang-thiet-ke-chi-phi-va-mau-thiet-ke-dep-hien-nay-2.jpg'
-    }, {
-      _id: 4, name: 'Nhà Hàng', timeon: '05:00', timeoff: '22:00', adress: 'Hà Nội', image: 'https://3adesign.vn/wp-content/uploads/trang-tri-nha-hang-thiet-ke-chi-phi-va-mau-thiet-ke-dep-hien-nay-2.jpg'
-    },
-  ])
+  const [datarestauran, setdatarestauran] = useState([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(URL + 'api/restaurant/getAll');
+        const jsonData = await response.json();
+        const data = jsonData.data;
+        let filterRestaurnats = data.filter(datarestaurnat => datarestaurnat.role === "user");
+        setdatarestauran(filterRestaurnats);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, [])
 
   return (
     <View>
@@ -219,25 +226,22 @@ const Restaurant = ({ navigation }) => {
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {datarestauran.map((data, index) =>
-          <View key={data._id} style={{ width: 250, flexDirection: 'row' }}>
-            <TouchableOpacity onPress={() => navigation.navigate('Restaurant')}>
+          <View style={{ width: 250 }} key={data._id}>
+            <TouchableOpacity onPress={() => navigation.navigate('Restaurant', { restaurant: data._id })}>
               <View style={{ marginLeft: 15 }}>
                 <Image source={{ uri: data.image }} style={{ width: 0.58 * width, height: 0.2 * height, borderTopLeftRadius: 10, borderTopRightRadius: 10 }} />
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#ADD8E6', marginLeft: 15, width: 0.58 * width, height: 0.08 * height }}>
                 <View style={{ flexDirection: 'column', padding: 8 }}>
-                  <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#000000' }}> {data.name} </Text>
-                  <Text style={{ fontWeight: 'bold', color: '#000000' }}> {data.timeon} AM - {data.timeoff} PM</Text>
-                  <Text style={{ fontWeight: 'bold', color: '#000000' }}> {data.adress} </Text>
+                  <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#000000' }}>{data.name}</Text>
+                  <Text style={{ fontWeight: 'bold', color: '#000000' }}>{data.timeon} AM - {data.timeoff} PM</Text>
+                  <Text style={{ fontWeight: 'bold', color: '#000000' }}>{data.adress}</Text>
                 </View>
-                <TouchableOpacity onPress={() => navigation.navigate('Restaurant')} style={{ marginLeft: 'auto', backgroundColor: '#FFFFFF', width: 0.06 * width, alignItems: 'center', justifyContent: 'center', height: 0.025 * height, borderRadius: 20, marginTop: 20, marginRight: 10 }} >
+                <TouchableOpacity onPress={() => navigation.navigate('Restaurant', { restaurant: data._id })} style={{ marginLeft: 'auto', backgroundColor: '#FFFFFF', width: 0.06 * width, alignItems: 'center', justifyContent: 'center', height: 0.025 * height, borderRadius: 20, marginTop: 20, marginRight: 10 }} >
                   <Image source={require('./../Image/right_arrow.png')} style={{ width: 15, height: 15 }} />
                 </TouchableOpacity>
               </View>
-
             </TouchableOpacity>
-
-
           </View>
         )}
       </ScrollView>
@@ -254,12 +258,32 @@ const truncateString = (str, num) => {
 };
 
 const Goiymonan = ({ navigation }) => {
-  const [datamonangoiy, setdatamonan] = useState([
-    { _id: '1', name: 'Bún chó', restaurant: 'Nhà Hàng', image: 'https://cdn3.ivivu.com/2022/09/bun-bo-hue-ivivu-4.jpg' },
-    { _id: '2', name: 'Bún chó', restaurant: 'Nhà Hàng', image: 'https://cdn3.ivivu.com/2022/09/bun-bo-hue-ivivu-4.jpg' },
-    { _id: '3', name: 'Bún chó', restaurant: 'Nhà Hàng', image: 'https://cdn3.ivivu.com/2022/09/bun-bo-hue-ivivu-4.jpg' },
-    { _id: '4', name: 'Bún chó', restaurant: 'Nhà Hàng', image: 'https://cdn3.ivivu.com/2022/09/bun-bo-hue-ivivu-4.jpg' }
-  ]);
+  const [datamonangoiy, setdatamonan] = useState([]);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(URL + 'api/getTop');
+      const jsonData = await response.json();
+      const sortedData = jsonData.sort((a, b) => b.likeCount - a.likeCount);
+
+      // Kiểm tra dữ liệu trước khi thiết lập state
+      console.log('Dữ liệu từ API:', sortedData);
+
+      setdatamonan(sortedData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+    }, [])
+  );
 
   return (
     <View style={{ margin: 15 }}>
@@ -276,7 +300,7 @@ const Goiymonan = ({ navigation }) => {
           <View key={data._id || index} style={{ backgroundColor: '#FFE4C4', marginTop: 8, borderRadius: 10 }}>
             <TouchableOpacity
               style={{ margin: 15, flexDirection: 'row', alignItems: 'center' }}
-              onPress={() => navigation.navigate('ProductDetail')}
+              onPress={() => navigation.navigate('ProductDetail', { product: data })}
             >
               <Image
                 source={{ uri: data.image }}
@@ -284,10 +308,10 @@ const Goiymonan = ({ navigation }) => {
               />
               <View style={{ flexDirection: 'column', paddingLeft: 10, marginLeft: 10 }}>
                 <Text style={{ fontWeight: 'bold', fontSize: 15, color: '#000000' }}>
-                  {data.name}
+                  Tên món ăn: {truncateString(data.name, 13)}
                 </Text>
                 <Text style={{ paddingBottom: 5, paddingTop: 5, fontWeight: 'bold', color: '#000000' }}>
-                  {data.restaurant}
+                  Nhà hàng: {data.restaurantId && data.restaurantId.name ? truncateString(data.restaurantId.name, 18) : 'Đang cập nhật...'}
                 </Text>
                 <View style={{ flexDirection: 'row' }}>
                   <Image
@@ -295,7 +319,7 @@ const Goiymonan = ({ navigation }) => {
                     style={{ width: 25, height: 25 }}
                   />
                   <Text style={{ color: '#000000', fontWeight: 'bold', marginLeft: 8 }}>
-                    10
+                    {data.likeCount}
                   </Text>
                 </View>
               </View>
