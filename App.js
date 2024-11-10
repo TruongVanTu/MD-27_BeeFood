@@ -29,56 +29,61 @@ import HistoryScreen from './Screen/HistoryScreen';
 import Toast from 'react-native-toast-message';
 import UserInfor from './UserInfor';
 import ProfileInfor from './profile/ProfileInfor';
-
+import { Provider } from 'react-native-paper';
+import store from './Redux/StoreAddToCart';
+import { CartProvider } from './Component/CartContext';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <CartProvider>
+          <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
+            <Stack.Screen
+              name="Login"
+              component={LoginScreen}
+              options={{ title: 'HELLO' }}
+            />
+            <Stack.Screen
+              name="Register"
+              component={RegisterScreen}
+              options={{ title: 'Đăng ký' }}
+            />
+            <Stack.Screen name='Appnavigator' component={AppNavigator} />
+            <Stack.Screen name='Home' component={Home} />
 
-      <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ title: 'HELLO' }}
-        />
-        <Stack.Screen
-          name="Register"
-          component={RegisterScreen}
-          options={{ title: 'Đăng ký' }}
-        />
-        <Stack.Screen name='Appnavigator' component={AppNavigator} />
-        <Stack.Screen name='Home' component={Home} />
+            <Stack.Screen component={SearchComponent} name='Search' />
 
-        <Stack.Screen component={SearchComponent} name='Search' />
+            <Stack.Screen component={GanbanComponent} name='Ganban' />
+            <Stack.Screen component={ComxuatComponent} name='Comxuat' />
+            <Stack.Screen component={BunPhoComponent} name='BunPho' />
+            <Stack.Screen component={ChickenComponent} name='Chicken' />
+            <Stack.Screen component={AnVatComponent} name='AnVat' />
+            <Stack.Screen component={DoUongComponent} name='DoUong' />
+            <Stack.Screen component={BanhMiComponent} name='BanhMi' />
+            <Stack.Screen component={OrderScreen} name='Order' />
+            <Stack.Screen component={NotificationScreen} name='Notifications' />
+            <Stack.Screen component={ProfileScreen} name='Profile' />
+            <Stack.Screen component={ProductsFavorite} name='ProductFavoriteScreen' />
 
-        <Stack.Screen component={GanbanComponent} name='Ganban' />
-        <Stack.Screen component={ComxuatComponent} name='Comxuat' />
-        <Stack.Screen component={BunPhoComponent} name='BunPho' />
-        <Stack.Screen component={ChickenComponent} name='Chicken' />
-        <Stack.Screen component={AnVatComponent} name='AnVat' />
-        <Stack.Screen component={DoUongComponent} name='DoUong' />
-        <Stack.Screen component={BanhMiComponent} name='BanhMi' />
-        <Stack.Screen component={OrderScreen} name='Order' />
-        <Stack.Screen component={NotificationScreen} name='Notifications' />
-        <Stack.Screen component={ProfileScreen} name='Profile' />
-        <Stack.Screen component={ProductsFavorite} name='ProductFavoriteScreen' />
+            <Stack.Screen component={ProductDetailScreen} name='ProductDetail' options={{ title: 'Chi tiết sản phẩm' }} />
 
-        <Stack.Screen component={ProductDetailScreen} name='ProductDetail' options={{ title: 'Chi tiết sản phẩm' }} />
-
-        <Stack.Screen component={AllProducts} name='AllProducts' />
-        <Stack.Screen component={PayScreen} name='PayScreen' />
-        <Stack.Screen component={HistoryScreen} name='lichsu' />
-        <Stack.Screen component={UserInfor} name='UserInfor' />
-        <Stack.Screen component={ProfileInfor} name='ProfileInfor' />
-        <Stack.Screen component={RestaurantScreen} name='Restaurant' screenOptions={{
-          unmountOnBlur: true,
-        }} />
-        <Stack.Screen component={SplashScreen} name='SplashScreen' />
-        <Stack.Screen component={AllRestaurnat} name='AllRestaurant' />
-      </Stack.Navigator>
-      <Toast />
-    </NavigationContainer>
+            <Stack.Screen component={AllProducts} name='AllProducts' />
+            <Stack.Screen component={PayScreen} name='PayScreen' />
+            <Stack.Screen component={HistoryScreen} name='lichsu' />
+            <Stack.Screen component={UserInfor} name='UserInfor' />
+            <Stack.Screen component={ProfileInfor} name='ProfileInfor' />
+            <Stack.Screen component={RestaurantScreen} name='Restaurant' screenOptions={{
+              unmountOnBlur: true,
+            }} />
+            <Stack.Screen component={SplashScreen} name='SplashScreen' />
+            <Stack.Screen component={AllRestaurnat} name='AllRestaurant' />
+          </Stack.Navigator>
+        </CartProvider>
+        <Toast />
+      </NavigationContainer>
+    </Provider>
   );
 }
 

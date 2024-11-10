@@ -9,18 +9,19 @@ import { URL } from '../const/const';
 
 const ProductsFavorite = ({ navigation }) => {
     const [datafavorite, setdataFavorite] = useState([
-        { _id: 1, name: 'Bún', restaurantId: 'Nhà Hàng', description: 'Ngonn', image: 'https://static.vinwonders.com/production/bun-bo-hue-cau-giay-1.jpg' }
+        { _id: 1, name: 'Bún', restaurantId: 'Nhà Hàng', description: 'Ngonn', image: 'https://static.vinwonders.com/production/bun-bo-hue-cau-giay-1.jpg' },
+        { _id: 2, name: 'Bún', restaurantId: 'Nhà Hàng', description: 'Ngonn', image: 'https://static.vinwonders.com/production/bun-bo-hue-cau-giay-1.jpg' }
     ])
 
     const renderItem = ({ item }) => (
         <View>
-            <View style={{ backgroundColor: '#FFE4C4', margin: 5, borderRadius: 10 }}>
+            <View style={{ backgroundColor: 'white', borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
                 <TouchableOpacity
                     style={{ margin: 15, flexDirection: 'row', height: 90, alignItems: 'center' }}
                     onPress={() => navigation.navigate('ProductDetail', { product: item })}
                 >
                     <View >
-                        <Image source={{ uri: item.image }} style={{ borderWidth: 1, width: width * 0.25, height: width * 0.25, borderRadius: 10 }} />
+                        <Image source={{ uri: item.image }} style={{ borderWidth: 1, width: width * 0.25, height: width * 0.25 }} />
                     </View>
                     <View style={{ flexDirection: 'column', paddingLeft: 10, marginLeft: 10 }}>
                         <Text style={{ fontWeight: 'bold', fontSize: 15, color: '#616161' }} numberOfLines={2}>Tên món ăn:
@@ -40,7 +41,7 @@ const ProductsFavorite = ({ navigation }) => {
     );
     return (
         <SafeAreaView style={{ marginTop: 0, flex: 1, backgroundColor: 'white' }}>
-            <ToolBar title="Sản phẩm yêu thích" onBackPress={() => navigation.goBack()} />
+            <ToolBar title="Yêu thích" onBackPress={() => navigation.goBack()} />
             <FlatList data={datafavorite}
                 keyExtractor={(item) => item._id.toString()}
                 renderItem={renderItem} />

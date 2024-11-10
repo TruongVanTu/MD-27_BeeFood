@@ -15,7 +15,6 @@ const ToolBar = ({ title, onBackPress }) => {
 const styles = StyleSheet.create({
     toolbar: {
         height: 60,
-        marginTop: 30,
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 10,
@@ -24,12 +23,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent', // Loại bỏ màu nền
     },
     backIcon: {
-        width: 25,
-        height: 25,
+        width: 20,
+        height: 20,
         marginRight: 10,
     },
     title: {
-        fontWeight: 'bold',
+        fontWeight: '500',
         fontSize: 20,
     },
 });

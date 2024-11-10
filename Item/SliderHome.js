@@ -26,7 +26,7 @@ const SliderHome = () => {
 
     return (
         <Swiper
-            style={{ height: 0.25 * height, margin: 15 }}
+            style={{ height: 0.25 * height}}
             showsButtons={false}
             autoplay={false}
             loop={false}
@@ -38,9 +38,8 @@ const SliderHome = () => {
                     <Image
                         source={{ uri: item.image }}
                         style={{
-                            width: 0.925 * width,
+                            width: 1 * width,
                             height: 0.25 * height,
-                            borderRadius: 15,
                         }}
                         resizeMode='cover'
                     />
