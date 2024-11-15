@@ -82,22 +82,51 @@ export default function RegisterScreen() {
         }
         if (rePassword !== trimmedPassword) {
             setValidateRepass('Mật khẩu nhập lại không khớp');
-            
             return;
         } else {
             setValidateRepass('');
         }
-        try {
-            // Nếu có API gọi đăng ký thì gọi ở đây
-            // await registerUser(trimmedUsername, trimmedPhone, trimmedPassword);
+
+
+        // Tạo dữ liệu
+        const registrationData = {
+            "username":trimmedUsername,
+            "phone":trimmedPhone,
+            "password":trimmedPassword,
+            "rePassword":trimmedRepassword
+        };
+
+        // Gửi yêu cầu POST
+        await fetch(URL+'api/users/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(registrationData),
+        })
+
+            .then(res => {
+                if (res.status === 200) {
+                    ToastAndroid.show('Đăng ký thành công',ToastAndroid.SHORT)
+                    setUsername("");
+                    setPhone("");
+                    setPassword("");
+                    navigation.navigate('Login');
+                }else if (res.status === 501) {
+                    ToastAndroid.show('Tên tài khoản đã được sử dụng!! ', ToastAndroid.SHORT);
+                } else if (res.status === 502) {
+                    ToastAndroid.show('Số điện thoại đã được sử dụng!! ', ToastAndroid.SHORT);
+                } else {
+                    ToastAndroid.show('Đăng kí thất bại', ToastAndroid.SHORT);
+                }
+            })
+            .catch(e => {
+                console.error(e);
+                ToastAndroid.show('Đăng kí thất bại',ToastAndroid.SHORT)
+            });
+
+    }
     
-            // Điều hướng sau khi đăng ký thành công
-            navigation.navigate('Login'); 
-        } catch (error) {
-            console.log('Error during registration:', error);
-        }
-      
-    };
     return (
         <View style={styles.container}>
             <Image style={styles.logo} source={require('./../Image/Logo_BeeFood.png')} />
@@ -154,7 +183,7 @@ export default function RegisterScreen() {
             {validaRepass !== '' && <Text style={styles.errorText}>{validaRepass}</Text>}
             <Button
                 mode="contained"
-                onPress={(handleRegister) }
+                onPress={handleRegister}
                 style={styles.btn_register}
             >
                 ĐĂNG KÝ
@@ -162,7 +191,6 @@ export default function RegisterScreen() {
         </View>
     );
 }
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
