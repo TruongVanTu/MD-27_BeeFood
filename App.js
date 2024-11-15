@@ -4,7 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import Home from './Screen/Home';
 import OrderScreen from './Screen/OrderScreen';
-
+import { Provider } from 'react-redux';
 import AnVatComponent from './Component/AnVatComponent';
 import GanbanComponent from './Component/GanbanComponent';
 import ComxuatComponent from './Component/ComxuatComponent';
@@ -29,7 +29,6 @@ import HistoryScreen from './Screen/HistoryScreen';
 import Toast from 'react-native-toast-message';
 import UserInfor from './UserInfor';
 import ProfileInfor from './profile/ProfileInfor';
-import { Provider } from 'react-native-paper';
 import store from './Redux/StoreAddToCart';
 import { CartProvider } from './Component/CartContext';
 const Stack = createNativeStackNavigator();
