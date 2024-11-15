@@ -262,7 +262,6 @@ const OrderScreen = ({ navigation, route }) => {
             <CheckBox
               checked={product.ischecked}
               onPress={() => toggleProductSelection(index)}
-
             />
             <Image source={{ uri: product.image }} style={styles.productImage} />
             <View style={{ flexDirection: 'column', flex: 1 }}>
@@ -392,7 +391,7 @@ const styles = StyleSheet.create({
   },
   button: {
     flexDirection: 'row',
-    backgroundColor: '#319AB4',
+    backgroundColor: '#FF4500',
     padding: 10,
     borderRadius: 5,
     justifyContent: 'center',
