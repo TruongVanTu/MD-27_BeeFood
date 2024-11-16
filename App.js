@@ -26,6 +26,8 @@ import LoginScreen from './Screen/LoginScreen';
 import ProductsFavorite from './Screen/ProductsFavorite';
 import PayScreen from './Screen/PayScreen';
 import HistoryScreen from './Screen/HistoryScreen';
+import History from './profile/History';
+import Detailhistory from './profile/Detailhistory';
 import Toast from 'react-native-toast-message';
 import UserInfor from './UserInfor';
 import ProfileInfor from './profile/ProfileInfor';
@@ -85,6 +87,8 @@ export default function App() {
                     <Stack.Screen component={PaymentScreen} name='PaymentScreen' />
                     <Stack.Screen component={AllRestaurnat} name='AllRestaurant' />
 
+                    <Stack.Screen component={History} name='lichsu' />
+                    <Stack.Screen component={Detailhistory} name='Detailhistory' />
 
                 </Stack.Navigator>
             </CartProvider>
