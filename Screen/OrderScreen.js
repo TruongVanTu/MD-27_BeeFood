@@ -1,7 +1,7 @@
-import React, { useState ,useReducer, useEffect } from 'react';
+import React, { useState, useReducer, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, SafeAreaView, Platform, TouchableOpacity, Alert } from 'react-native';
 import { useCart } from '../Component/CartContext'; // Import the useCart hook
-import { useSelector  , useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import { deleteproduct, updatecartproduct } from '../Redux/ActionAddtoCart';
@@ -16,10 +16,10 @@ const OrderScreen = ({ navigation, route }) => {
   const [dataUid, setDataUid] = useState('');
   const [totalPrice, setTotalPrice] = useState(0);
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
-  const [products , setProducts] = useState([]);
+  const [products, setProducts] = useState([]);
   const [selectedProductIndexes, setSelectedProductIndexes] = useState([]);
 
-  const [selectallProducts , setSelectAllProducts] = useState(false)
+  const [selectallProducts, setSelectAllProducts] = useState(false)
   const [selectedProducts, setSelectedProducts] = useState([]);
 
 
@@ -33,9 +33,9 @@ const OrderScreen = ({ navigation, route }) => {
       try {
         const storedUsername = await AsyncStorage.getItem('username');
         const storedUserId = await AsyncStorage.getItem('_id');
-        
+
         if (storedUsername && storedUserId) {
-          
+
           // setIsLoggedIn(true);
           setCurrentUser({ username: storedUsername, _id: storedUserId });
           console.log("User name:", storedUsername);
@@ -45,12 +45,12 @@ const OrderScreen = ({ navigation, route }) => {
           console.log("User ID:", storedUserId);
           // console.log("Is Logged In:", false);   // Log trạng thái đăng nhập là false
         }
-        
+
       } catch (error) {
         console.error('Error retrieving stored data:', error);
       }
     };
-    
+
     checkLoginStatus();
   }, []);
   useEffect(() => {
@@ -59,12 +59,12 @@ const OrderScreen = ({ navigation, route }) => {
         const storedData = await AsyncStorage.getItem('_id'); // Thay 'key' bằng khóa lưu trữ của bạn
         if (storedData !== null) {
           const isLogin = await AsyncStorage.getItem('isLogin');
-          if(isLogin==='true'){
+          if (isLogin === 'true') {
             setIsLoggedIn(true)
-          setDataUid(storedData);
-          console.log("vào đây vào log" , dataUid)
+            setDataUid(storedData);
+            console.log("vào đây vào log", dataUid)
           }
-  
+
         }
       } catch (error) {
         console.log(error);
@@ -75,48 +75,48 @@ const OrderScreen = ({ navigation, route }) => {
 
 
 
-      
-
-const fetchDataOder= async ()=>{
-
-  const storedData = await AsyncStorage.getItem('_id');
-  try {
-    const response = await fetch(`${URL}api/order`)
-    const jsonData = await response.json();
-    const datafilter = jsonData.filter((obj , index)=>
-       obj.userId === storedData
-    )
 
 
-    const updatedProducts = datafilter.map((product) => ({
-      ...product,
-      ischecked: false,
-    }));
-    console.log("vào đây log data order data fillter" , updatedProducts)
-    setProducts(updatedProducts);
-  
+  const fetchDataOder = async () => {
 
-  
-  } catch (error) {
-        console.log(error);
+    const storedData = await AsyncStorage.getItem('_id');
+    try {
+      const response = await fetch(`${URL}api/order`)
+      const jsonData = await response.json();
+      const datafilter = jsonData.filter((obj, index) =>
+        obj.userId === storedData
+      )
+
+
+      const updatedProducts = datafilter.map((product) => ({
+        ...product,
+        ischecked: false,
+      }));
+      console.log("vào đây log data order data fillter", updatedProducts)
+      setProducts(updatedProducts);
+
+
+
+    } catch (error) {
+      console.log(error);
+    }
   }
-}
- 
-useEffect(() => {
-  if (isFocused) {
-    // Gọi hàm tải dữ liệu tại đây
-    setSelectAllProducts(false)
-    fetchDataOder()
+
+  useEffect(() => {
+    if (isFocused) {
+      // Gọi hàm tải dữ liệu tại đây
+      setSelectAllProducts(false)
+      fetchDataOder()
 
 
-  }
-}, [isFocused]);
+    }
+  }, [isFocused]);
 
-useEffect(()=>{
+  useEffect(() => {
 
-} , [])
+  }, [])
   // useEffect(() => {
-   
+
   // const getDataFromAsyncStorage = async (key, id) => {
   //   // try {
   //     // const jsonData = await AsyncStorage.getItem(key);
@@ -125,7 +125,7 @@ useEffect(()=>{
   //     //   const filteredData = dataArray.filter((obj) => obj.idusser === id);
   //     //   setProducts(filteredData)
 
-       
+
   //     // }
 
   //   // } catch (error) {
@@ -136,51 +136,51 @@ useEffect(()=>{
   // }, []);
 
 
-  useEffect(()=>{ 
-      calculateTotalPrice();
+  useEffect(() => {
+    calculateTotalPrice();
 
-  },[products])
-  useEffect(()=>{
-  },[])
+  }, [products])
+  useEffect(() => {
+  }, [])
 
   // Function to calculate the total price
   const calculateTotalPrice = () => {
     let total = 0;
-if(products && products.length>=0){
-  products.forEach((product) => {
-      if(product.ischecked==true){
-        total += (product.price * product.quantity);
-      }
-  });
+    if (products && products.length >= 0) {
+      products.forEach((product) => {
+        if (product.ischecked == true) {
+          total += (product.price * product.quantity);
+        }
+      });
 
 
-  
-  setTotalPrice(total);
-}
+
+      setTotalPrice(total);
+    }
   };
   // const filterProductsByChecked = (products) => {
   //  return  products.filter(product => product.ischecked ==true);
 
-  
-     
-    
+
+
+
   // };
   const checkout = () => {
     // Create an array of product details
     // console.log('Checkout', products);
 
-    const   areAllChecked  = products.every((product,index, array)=> product.ischecked ===false
-    
+    const areAllChecked = products.every((product, index, array) => product.ischecked === false
+
     )
 
-    console.log("dataa allllllllllllsdasdasdhahsdasjd" , areAllChecked);
+    console.log("dataa allllllllllllsdasdasdhahsdasjd", areAllChecked);
 
-    if(areAllChecked==true){
+    if (areAllChecked == true) {
       alert("vui lòng lựa chọn món ăn để thanh toán")
       return
     }
     const selectedProducts = products.filter((product) => product.ischecked);
-    navigation.navigate('PayScreen', { products:selectedProducts ,  dataUid});
+    navigation.navigate('PayScreen', { products: selectedProducts, dataUid });
 
 
   };
@@ -196,10 +196,10 @@ if(products && products.length>=0){
       );
       return
     }
-         checkout();
-        
-     
-    
+    checkout();
+
+
+
 
   };
 
@@ -212,10 +212,10 @@ if(products && products.length>=0){
           'Content-Type': 'application/json',
         },
       });
-  
+
       if (response.ok) {
         const data = await response.json();
-        console.log(data); 
+        console.log(data);
         fetchDataOder()
       } else {
         const errorData = await response.json();
@@ -227,7 +227,7 @@ if(products && products.length>=0){
       // ...
     }
   };
-  
+
 
 
   const deleteProduct = (product) => {
@@ -260,13 +260,13 @@ if(products && products.length>=0){
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ quantity } )
+        body: JSON.stringify({ quantity })
       });
-  
+
       if (!response.ok) {
         throw new Error('Cập nhật đơn hàng không thành công');
       }
-  
+
       const dataorderupdate = await response.json();
       return dataorderupdate;
     } catch (error) {
@@ -274,20 +274,20 @@ if(products && products.length>=0){
       // Xử lý lỗi tại đây
     }
   };
-  const Updateischecked = async (orderId,ischecked) => {
+  const Updateischecked = async (orderId, ischecked) => {
     try {
       const response = await fetch(`${URL}api/updateischecked/${orderId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ischecked})
+        body: JSON.stringify({ ischecked })
       });
-  
+
       if (!response.ok) {
         throw new Error('Cập nhật đơn hàng không thành công');
       }
-  
+
       const dataorderupdate = await response.json();
       return dataorderupdate;
     } catch (error) {
@@ -296,17 +296,17 @@ if(products && products.length>=0){
     }
   };
 
-  const incrementQuantity =async (product , index) => {
+  const incrementQuantity = async (product, index) => {
     try {
-      console.log("id cart product" , product._id);
+      console.log("id cart product", product._id);
 
-      const quantityproducts = product.quantity ; 
-      const dataupdate = quantityproducts+1;
+      const quantityproducts = product.quantity;
+      const dataupdate = quantityproducts + 1;
 
-      console.log("data update"  ,quantityproducts)
+      console.log("data update", quantityproducts)
       const updatedOrder = await updateOrder(product._id, dataupdate);
       // Sử dụng updatedOrder trong ứng dụng của bạn
-      console.log("data after update" ,updatedOrder);
+      console.log("data after update", updatedOrder);
       fetchDataOder()
 
     } catch (error) {
@@ -314,48 +314,48 @@ if(products && products.length>=0){
       // Xử lý lỗi tại đây
     }
 
- 
- 
- 
-   
 
-   
+
+
+
+
+
     calculateTotalPrice();
   };
 
   const decrementQuantity = async (product) => {
 
-      try {
-        console.log("id cart product" , product._id);
-  
-        const quantityproducts = product.quantity ; 
-      if(quantityproducts>1){
-        const dataupdate = quantityproducts-1;
-        console.log("data update"  ,quantityproducts)
+    try {
+      console.log("id cart product", product._id);
+
+      const quantityproducts = product.quantity;
+      if (quantityproducts > 1) {
+        const dataupdate = quantityproducts - 1;
+        console.log("data update", quantityproducts)
         const updatedOrder = await updateOrder(product._id, dataupdate);
         // Sử dụng updatedOrder trong ứng dụng của bạn
-        console.log("data after update" ,updatedOrder);
+        console.log("data after update", updatedOrder);
         fetchDataOder()
-      }else{
+      } else {
         alert("số lượng phải lớn hơn 0")
       }
-  
-      
-  
-      } catch (error) {
-        console.error(error);
-        // Xử lý lỗi tại đây
-      }
-      calculateTotalPrice();
-    
-    
+
+
+
+    } catch (error) {
+      console.error(error);
+      // Xử lý lỗi tại đây
+    }
+    calculateTotalPrice();
+
+
   };
 
   // const toggleProductSelection = (index)=>{
   //     console.log("indexx checkbox" , index)
   // }
 
-  
+
 
 
   const toggleProductSelection = (index) => {
@@ -366,23 +366,23 @@ if(products && products.length>=0){
     };
     setProducts(updatedProducts);
 
-    const   areAllChecked  = updatedProducts.every((product,index, array)=> product.ischecked === true
-    
+    const areAllChecked = updatedProducts.every((product, index, array) => product.ischecked === true
+
     )
 
-    if(areAllChecked==true){
+    if (areAllChecked == true) {
       setSelectAllProducts(true)
-    }else{
+    } else {
       setSelectAllProducts(false)
     }
-  
+
   };
   const updateSelectAllProducts = () => {
 
-   if(products.length ==0){
-    alert("không có sản phẩm trong giỏ hàng")
-    return
-   }
+    if (products.length == 0) {
+      alert("không có sản phẩm trong giỏ hàng")
+      return
+    }
     const updatedProducts = products.map((product) => ({
       ...product,
       ischecked: !selectallProducts,
@@ -399,46 +399,48 @@ if(products && products.length>=0){
       </View>
       {isLoggedIn ? (
         <>
-         <View style = {{flexDirection:'row' , justifyContent:'space-between'}}>
-         <Text style={styles.sectionTitle}>Selected Products</Text>
-      <View style = {{flexDirection:'row'}}>
-      <Text style={styles.sectionTitle}>Select all</Text>
-      <CheckBox
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text style={styles.sectionTitle}>Selected Products</Text>
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={styles.sectionTitle}>Select all</Text>
+              <CheckBox
                 checked={selectallProducts}
                 onPress={() => updateSelectAllProducts()}
               />
-      </View>
-         </View>
-          <ScrollView>
-        {products&& products.length>0?(products.map((product, index) => (
-          <View key={index} style={styles.productContainer}>
-              <CheckBox
-              checked={product.ischecked}
-              onPress={() => toggleProductSelection(index)}
-            
-            />
-              <Image source={{ uri: product.image }} style={styles.productImage} />
-              <View style={{ flexDirection: 'column', flex: 1 }}>
-                <Text style={styles.productName}>{product.name}</Text>
-                <Text style={styles.productPrice}>{product.price * product.quantity} VND</Text>
-              </View>
-            <View style={styles.quantityContainer}>
-              <TouchableOpacity onPress={() => decrementQuantity(product)}>
-                <Text style={styles.quantityText}>-</Text>
-              </TouchableOpacity>
-              <Text style={styles.quantityText}>{product.quantity}</Text>
-              <TouchableOpacity onPress={() => incrementQuantity(product , index)}>
-                <Text style={styles.quantityText}>+</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.deleteButtonContainer}>
-              <TouchableOpacity onPress={() => deleteProduct(product)}>
-                <Image source={require('./../Image/delete-icon.png')} style={styles.icon} />
-              </TouchableOpacity>
             </View>
           </View>
-        ))):  Toast.show('This is a toast.')}
-      </ScrollView>
+          <ScrollView>
+            {products && products.length > 0 ? (products.map((product, index) => (
+              <View key={index} style={styles.productContainer}>
+                <CheckBox
+                  checked={product.ischecked}
+                  onPress={() => toggleProductSelection(index)}
+
+                />
+                <Image source={{ uri: product.image }} style={styles.productImage} />
+                <View style={{ flexDirection: 'column', flex: 1 }}>
+                  <Text style={styles.productName}>{product.name}</Text>
+                  <Text style={styles.productPrice}>{product.price * product.quantity} VND</Text>
+                </View>
+                <View style={styles.quantityContainer}>
+                  <TouchableOpacity onPress={() => decrementQuantity(product)}>
+                    <Text style={styles.quantityText}>-</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.quantityText}>{product.quantity}</Text>
+                  <TouchableOpacity onPress={() => incrementQuantity(product, index)}>
+                    <Text style={styles.quantityText}>+</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.deleteButtonContainer}>
+                  <TouchableOpacity onPress={() => deleteProduct(product)}>
+                    <Image source={require('./../Image/delete-icon.png')} style={styles.icon} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))) : <View style={styles.emptyCartContainer}>
+              <Text style={styles.emptyCartText}>Giỏ hàng của bạn đang trống.</Text>
+            </View>}
+          </ScrollView>
 
           <View style={styles.bottomRow}>
             <Text style={styles.totalPrice}>Total: {totalPrice} VND</Text>
