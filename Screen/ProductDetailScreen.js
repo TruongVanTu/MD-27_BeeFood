@@ -103,13 +103,7 @@ console.log(product.average);
   
         if (filteredComments.length > 0) {
           setComments(filteredComments);
-        } else {
-          Toast.show({
-            type: 'info',
-            text1: 'Thông báo',
-            text2: 'Không có dữ liệu bình luận cho sản phẩm này.',
-          });
-        }
+        } 
       } else {
         Toast.show({
           type: 'error',
