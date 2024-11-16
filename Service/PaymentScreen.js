@@ -33,7 +33,7 @@ const PaymentScreen = ({ route, navigation }) => {
     console.log('data products2222', products);
 
     try {
-      const response = await fetch(URL + 'api...', {
+      const response = await fetch(URL + 'api/history/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
