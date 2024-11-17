@@ -64,8 +64,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   image: {
-    width: 250,
-    height: 150,  // Giảm chiều cao ảnh xuống
+    width: 200,
+    height: 170,  // Giảm chiều cao ảnh xuống
     marginBottom: 10,  // Giảm khoảng cách dưới ảnh
   },
   heading: {

@@ -647,7 +647,7 @@ getdataproductFavorite()
           </View>
 
           {/* Initialize Toast container */}
-          <Toast ref={(ref) => Toast.setRef(ref)} />
+          {/* <Toast ref={(ref) => Toast.setRef(ref)} /> */}
         </View>
 
         <View></View>

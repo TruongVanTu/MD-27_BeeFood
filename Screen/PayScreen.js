@@ -365,7 +365,7 @@ const PayScreen = ({ route, navigation }) => {
  
         </ScrollView>
       </View>
-      <Toast ref={(ref) => Toast.setRef(ref)} />
+      {/* <Toast ref={(ref) => Toast.setRef(ref)} /> */}
     </SafeAreaView>
   );
 };
