@@ -59,9 +59,9 @@ const GanbanComponent = ({navigation}) => {
               </View>
             </TouchableOpacity>
           </View>
-
+     
         )}
-      </ScrollView>
+     </ScrollView>
 
     </SafeAreaView>
   )

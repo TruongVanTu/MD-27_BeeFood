@@ -44,7 +44,7 @@ const SuccessModal = ({ isVisible, navigation, products}) => {
   return (
     <Modal isVisible={isVisible}>
       <View style={styles.container}>
-        <Image source={require('../Image/Image/logo_bean.png')} style={styles.image} />
+        <Image source={require('../Image/Logo_BeeFood.png')} style={styles.image} />
         <Text style={styles.heading}>BẠN ĐÃ ĐẶT HÀNG</Text>
         <Text style={styles.subheading}>THÀNH CÔNG</Text>
         <Text style={styles.instruction}>Kiểm tra đơn hàng của bạn trong mục "Lịch sử đơn hàng"!</Text>
@@ -64,8 +64,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   image: {
-    width: 250,
-    height: 150,  // Giảm chiều cao ảnh xuống
+    width: 200,
+    height: 170,  // Giảm chiều cao ảnh xuống
     marginBottom: 10,  // Giảm khoảng cách dưới ảnh
   },
   heading: {
