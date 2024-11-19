@@ -69,7 +69,7 @@ const NotificationScreen = ({ item, navigation }) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Image
-          source={require("./../Image/ Logo_BeeFood.png")} // Thay đổi đường dẫn ảnh
+          source={require("./../Image/Logo_BeeFood.png")} // Thay đổi đường dẫn ảnh
           style={styles.logo}
         />
         <Text style={styles.title}>Notification Food</Text>
