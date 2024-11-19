@@ -124,7 +124,7 @@ const Detailhistory = ({ route, navigation }) => {
                 <>
     <ScrollView >
       <View style={styles.orderDetails}>
-        <Text style={styles.orderStatus}>BeanFood</Text>
+        <Text style={styles.orderStatus}>BeeFood</Text>
         <Text style={styles.orderStatus}>Trạng thái: {getStatusLabel(orderDetails.status)}</Text>
         <Text style={styles.orderNumber}>Đơn hàng: B-{orderDetails._id}</Text>
       </View>
