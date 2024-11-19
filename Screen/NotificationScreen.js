@@ -29,6 +29,8 @@ const NotificationScreen = ({ item, navigation }) => {
             response = dt.listNotify;
             // Sắp xếp theo thời gian giảm dần
             response.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            // Sắp xếp theo thời gian giảm dần
+            response.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             setHistoryData(response);
           });
         // const response = (
@@ -104,6 +106,7 @@ const NotificationScreen = ({ item, navigation }) => {
                   <Image source={{
                     uri: "https://cdn4.vectorstock.com/i/1000x1000/92/63/complete-order-icon-in-line-style-for-any-projects-vector-35249263.jpg",
                   }}
+                  
                     style={{
                       width: 49,
                       height: 49,
