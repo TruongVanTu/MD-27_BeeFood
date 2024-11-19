@@ -60,7 +60,7 @@ const NotificationScreen = ({ item, navigation }) => {
   }, []);
   const handleDeital = async (item) => {
     console.log('item',item);
-    // navigation.navigate("Detailhistory", { orderId: item._id });
+    
   };
 
   console.log(historyData?.length);
