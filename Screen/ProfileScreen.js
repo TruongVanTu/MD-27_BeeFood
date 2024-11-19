@@ -37,7 +37,8 @@ const ProfileScreen = ({ route, navigation }) => {
   }
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem('username'); // Xóa username khỏi AsyncStorage
+      await AsyncStorage.removeItem('username');
+      await AsyncStorage.removeItem('_id'); // Xóa username khỏi AsyncStorage
       setIsLoggedIn(false);
       setUsername('');
       navigation.navigate('Home');
