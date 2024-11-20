@@ -12,7 +12,7 @@ const BanhMiComponent = ({navigation}) => {
     const fetchData = async () => {
       try {
 
-        const response = await fetch(`${URL}api/productDanhmuc/banhmi`);
+        const response = await fetch(`${URL}api/productDanhmuc/Bánh mì`);
         const jsonData = await response.json();
         setbanhmi(jsonData.products);
       } catch (error) {

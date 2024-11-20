@@ -11,7 +11,7 @@ const GanbanComponent = ({navigation}) => {
     const fetchData = async () => {
       try {
 
-        const response = await fetch(`${URL}api/productDanhmuc/bo`);
+        const response = await fetch(`${URL}api/productDanhmuc/Bò`);
         const jsonData = await response.json();
         setganban(jsonData.products);
       } catch (error) {

@@ -7,6 +7,7 @@ import {
     TextInput,
     Alert,
     TouchableOpacity,
+    SafeAreaView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -149,7 +150,7 @@ export default function UserInfor() {
     ];
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <ToolBar title="Thông tin cá nhân" onBackPress={() => navigation.goBack()} />
             {userInfo ? (
                 <View style={styles.horizontalContainer}>
@@ -219,7 +220,7 @@ export default function UserInfor() {
                     <Text style={styles.buttonText}>LƯU</Text>
                 </TouchableOpacity>
             )}
-        </View>
+        </SafeAreaView>
     );
 }
 

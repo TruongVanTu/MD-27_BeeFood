@@ -11,7 +11,7 @@ const DoUongComponent = ({navigation}) => {
     const fetchData = async () => {
       try {
 
-        const response = await fetch(`${URL}api/productDanhmuc/douong`);
+        const response = await fetch(`${URL}api/productDanhmuc/Đồ uống`);
         const jsonData = await response.json();
 
         console.log("jsondata" , jsonData.products);

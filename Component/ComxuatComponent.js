@@ -12,7 +12,7 @@ const ComxuatComponent = ({navigation}) => {
     const fetchData = async () => {
       try {
 
-        const response = await fetch(`${URL}api/productDanhmuc/com`);
+        const response = await fetch(`${URL}api/productDanhmuc/Cơm`);
         const jsonData = await response.json();
         setcomxuat(jsonData.products);
       } catch (error) {

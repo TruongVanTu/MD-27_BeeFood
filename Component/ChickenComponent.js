@@ -12,7 +12,7 @@ const ChickenComponent = ({navigation}) => {
     const fetchData = async () => {
       try {
 
-        const response = await fetch(`${URL}api/productDanhmuc/ga`);
+        const response = await fetch(`${URL}api/productDanhmuc/Gà`);
         const jsonData = await response.json();
         setchicken(jsonData.products);
       } catch (error) {

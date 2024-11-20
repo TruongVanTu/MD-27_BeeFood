@@ -11,7 +11,7 @@ const BunPhoComponent = ({navigation}) => {
     const fetchData = async () => {
       try {
 
-        const response = await fetch(`${URL}api/productDanhmuc/bun`);
+        const response = await fetch(`${URL}api/productDanhmuc/Bún`);
         const jsonData = await response.json();
         setbunpho(jsonData.products);
       } catch (error) {

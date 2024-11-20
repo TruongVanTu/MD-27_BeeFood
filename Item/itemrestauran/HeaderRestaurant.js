@@ -32,7 +32,8 @@ const CoffeeShopScreen = ({navigation , data}) => {
        
      <View style ={{top:width*0.3 }}>
      <Text style={styles.name}>{data.name}</Text>
-          <Text style={styles.address}>{data.address} - {data.phone}</Text>
+          <Text style={styles.address}>{data.address}</Text>
+          <Text style={styles.address}>Call: {data.phone}</Text>
           <View style={styles.timeInfo}>
             <View style={styles.timeBlock}>
               <View
@@ -51,7 +52,7 @@ const CoffeeShopScreen = ({navigation , data}) => {
               ></View>
               <View  style={styles.center}>
                 <Text style={styles.timeLabel}>Thời gian chuẩn bị</Text>
-                <Text style={styles.time}>9:30 - 22:30</Text>
+                <Text style={styles.time}>20p</Text>
               </View>
             </View>
           </View>
