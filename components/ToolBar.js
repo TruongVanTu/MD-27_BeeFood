@@ -1,14 +1,14 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, SafeAreaView } from 'react-native';
 
 const ToolBar = ({ title, onBackPress }) => {
     return (
-        <View style={styles.toolbar}>
+        <SafeAreaView style={styles.toolbar}>
             <TouchableOpacity onPress={onBackPress}>
                 <Image source={require('../Image/left_arrow.png')} style={styles.backIcon} />
             </TouchableOpacity>
             <Text style={styles.title}>{title}</Text>
-        </View>
+        </SafeAreaView>
     );
 };
 

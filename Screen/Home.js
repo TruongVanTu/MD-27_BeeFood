@@ -169,7 +169,7 @@ const Restaurant = ({ navigation }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(URL + 'api/restaurant/getAll');
+        const response = await fetch(URL+'api/restaurant/getAll');
         const jsonData = await response.json();
         const data = jsonData.data;
         let filterRestaurnats = data.filter(datarestaurnat => datarestaurnat.role === "user");
@@ -183,33 +183,68 @@ const Restaurant = ({ navigation }) => {
   }, [])
 
   return (
-    <View style={{ paddingBottom: 15 }}>
+    <View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 15, marginVertical: 8 }}>
-        <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#616161' }}>Nhà hàng quanh đây</Text>
+        <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#616161' }}>Cơ Sở BeeFood</Text>
         <TouchableOpacity onPress={() => navigation.navigate('AllRestaurant')}>
-          <Text>Xem tất cả</Text>
+          <Text style={{ color: '#007AFF' }}>Xem tất cả</Text>
         </TouchableOpacity>
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {datarestauran.map((data, index) =>
-          <View style={{ width: 150 }} key={data._id}>
+        {datarestauran.map((data, index) => (
+          <View style={{ width: width * 0.65, marginHorizontal: 10, marginTop: 15 }} key={data._id}>
             <TouchableOpacity onPress={() => navigation.navigate('Restaurant', { restaurant: data._id })}>
-              <View style={{ marginLeft: 15, marginRight: 15 }}>
-                <Image source={{ uri: data.image }} style={{ width: 0.33 * width, height: 0.2 * height }} />
+              <View>
+                <Image 
+                  source={{ uri: data.image }} 
+                  style={{ 
+                    width: '100%', 
+                    height: height * 0.25, 
+                    borderTopLeftRadius: 10, 
+                    borderTopRightRadius: 10 
+                  }} 
+                  resizeMode="cover" 
+                />
               </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#f1f1f1', marginLeft: 15, width: 0.33 * width, height: 0.08 * height, borderWidth:0.5, borderColor:'#ccc' }}>
-                <View style={{ flexDirection: 'column', padding: 8 }}>
-                  <Text numberOfLines={1} ellipsizeMode='tail' style={{ fontWeight: 'bold', fontSize: 20, color: '#000000', fontSize:16 }}>{data.name}</Text>
-                  <Text style={{ fontSize:11, color: '#000000' }}>{data.timeon} AM - {data.timeoff} PM</Text>
-                  <Text style={{ fontWeight: 'bold', color: '#000000' }}>{data.adress}</Text>
+              <View 
+                style={{ 
+                  flexDirection: 'row', 
+                  alignItems: 'center', 
+                  backgroundColor: '#EEEEEE', 
+                  padding: 10, 
+                  borderBottomLeftRadius: 10, 
+                  borderBottomRightRadius: 10, 
+                  marginBottom:10
+                }}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#000000' }}>{data.name}</Text>
+                  <Text style={{ fontWeight: 'bold', color: '#000000' }}>{data.timeon} AM - {data.timeoff} PM</Text>
+                  <Text style={{ color: '#000000' }}>{data.address}</Text>
                 </View>
+                <TouchableOpacity 
+                  onPress={() => navigation.navigate('Restaurant', { restaurant: data._id })} 
+                  style={{ 
+                    backgroundColor: '#FFFFFF', 
+                    width: 35, 
+                    height: 35, 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    borderRadius: 17.5 
+                  }}
+                >
+                  <Image 
+                    source={require('./../Image/right_arrow.png')} 
+                    style={{ width: 15, height: 15 }} 
+                  />
+                </TouchableOpacity>
               </View>
             </TouchableOpacity>
           </View>
-        )}
+        ))}
       </ScrollView>
     </View>
-  )
+  );
 }
 
 const truncateString = (str, num) => {
@@ -270,18 +305,18 @@ const Goiymonan = ({ navigation }) => {
                 style={{ width: width * 0.25, height: width * 0.25 }}
               />
               <View style={{ flexDirection: 'column', paddingLeft: 10, marginLeft: 10 }}>
-                <Text style={{fontWeight:'600',  fontSize: 15, color: '#000000', marginTop:5 }}>
+                <Text style={{ fontWeight: '600', fontSize: 15, color: '#000000', marginTop: 5 }}>
                   Tên món ăn: {truncateString(data.name, 13)}
                 </Text>
                 <Text style={{ paddingBottom: 5, paddingTop: 5, fontWeight: '600', color: '#000000' }}>
                   Nhà hàng: {data.restaurantId && data.restaurantId.name ? truncateString(data.restaurantId.name, 18) : 'Đang cập nhật...'}
                 </Text>
-                <View style={{ flexDirection: 'row', alignItems:'center' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Image
                     source={require("./../Image/heart_1.png")}
                     style={{ width: 20, height: 20 }}
                   />
-                  <Text style={{ color: '#000000', fontWeight: '600', marginLeft: 8}}>
+                  <Text style={{ color: '#000000', fontWeight: '600', marginLeft: 8 }}>
                     {data.likeCount}
                   </Text>
                 </View>
@@ -314,7 +349,7 @@ const Home = ({ navigation }) => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
         <SliderHome />
-        <View style={{backgroundColor:'white'}}>
+        <View style={{ backgroundColor: 'white' }}>
           <Menu navigation={navigation} />
         </View>
         <View style={styles.bgr}>
@@ -335,6 +370,7 @@ export default Home
 const styles = StyleSheet.create({
   menuContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
     paddingVertical: 10,
@@ -344,7 +380,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    width: (width / 2) - 120, // Điều chỉnh để phù hợp với kích thước màn hình
+    width: '24%',
+    marginBottom: 5,
     padding: 10,
     elevation: 5, // Độ cao của bóng cho Android
     shadowColor: '#000', // Màu bóng cho iOS
