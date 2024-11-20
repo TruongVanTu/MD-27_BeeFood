@@ -1,62 +1,83 @@
 import React from "react";
+import { Linking } from "react-native";
 import {
   View,
   Text,
   StyleSheet,
   ImageBackground,
-  Dimensions,Image , TouchableOpacity 
+  Dimensions, Image, TouchableOpacity
 } from "react-native";
 
 
 const { width, height } = Dimensions.get("window");
 
-const CoffeeShopScreen = ({navigation , data}) => {
+const CoffeeShopScreen = ({ navigation, data }) => {
+  const openGoogleMaps = () => {
+    const encodedAddress = encodeURIComponent(data.address); // Mã hóa địa chỉ để sử dụng trong URL
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
+
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (supported) {
+          Linking.openURL(url); // Mở URL chỉ đường
+        } else {
+          Alert.alert("Lỗi", "Không thể mở Google Maps trên thiết bị này.");
+        }
+      })
+      .catch(err => console.error("Error opening Google Maps: ", err));
+  };
+
   return (
     <View style={styles.screen}>
 
       <ImageBackground
-        source={{uri: data.image}} // Thay thế bằng URL hình ảnh của bạn
+        source={{ uri: data.image }} // Thay thế bằng URL hình ảnh của bạn
         resizeMode="cover"
         style={styles.imageBackground}
       >
-   
-   
+
+
         {/* Thêm một overlay nếu muốn để làm nổi bật nội dung */}
         <View style={styles.overlay}>
-        <View style={styles.butonheader}>
-            <TouchableOpacity onPress={()=> navigation.goBack()}>
-            <Image source={require('./../../Image/path.png')} />
+          <View style={styles.butonheader}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Image source={require('./../../Image/path.png')} />
             </TouchableOpacity>
-            
-        </View>
-       
-     <View style ={{top:width*0.3 }}>
-     <Text style={styles.name}>{data.name}</Text>
-          <Text style={styles.address}>{data.address}</Text>
-          <Text style={styles.address}>Call: {data.phone}</Text>
-          <View style={styles.timeInfo}>
-            <View style={styles.timeBlock}>
-              <View
-                style={styles.center}
-              >
-                <Text style={styles.timeLabel}>Thời gian mở cửa</Text>
-                <Text style={styles.time}>{data.timeon} - {data.timeoff}</Text>
-              </View>
 
-              <View
-                style={{
-                  width: 1,
-                  backgroundColor: "black",
-                  height: height * 0.05,
-                }}
-              ></View>
-              <View  style={styles.center}>
-                <Text style={styles.timeLabel}>Thời gian chuẩn bị</Text>
-                <Text style={styles.time}>20p</Text>
+          </View>
+
+          <View style={{ top: width * 0.3 }}>
+            <Text style={styles.name}>{data.name}</Text>
+            {/* Thêm TouchableOpacity vào địa chỉ */}
+            <TouchableOpacity onPress={openGoogleMaps}>
+              <Text style={[styles.address, { textDecorationLine: "underline" }]}>
+                {data.address}
+              </Text>
+            </TouchableOpacity>
+            <Text style={styles.address}>Call: {data.phone}</Text>
+            <View style={styles.timeInfo}>
+              <View style={styles.timeBlock}>
+                <View
+                  style={styles.center}
+                >
+                  <Text style={styles.timeLabel}>Thời gian mở cửa</Text>
+                  <Text style={styles.time}>{data.timeon} - {data.timeoff}</Text>
+                </View>
+
+                <View
+                  style={{
+                    width: 1,
+                    backgroundColor: "black",
+                    height: height * 0.05,
+                  }}
+                ></View>
+                <View style={styles.center}>
+                  <Text style={styles.timeLabel}>Thời gian chuẩn bị</Text>
+                  <Text style={styles.time}>20p</Text>
+                </View>
               </View>
             </View>
           </View>
-     </View>
         </View>
       </ImageBackground>
     </View>
@@ -91,18 +112,18 @@ const styles = StyleSheet.create({
   },
   timeInfo: {
     flexDirection: "row",
- 
+
   },
   timeBlock: {
-    top:height*0.06,
+    top: height * 0.06,
     width: width,
-    right:width*0.05,
-    
+    right: width * 0.05,
+
     justifyContent: "space-between",
     flexDirection: "row",
     backgroundColor: "#F0F0F0",
-   borderTopLeftRadius:20 , 
-   borderTopRightRadius:20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     padding: 15,
     alignItems: "center",
   },
@@ -115,12 +136,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#333",
   },
-  center:{
+  center: {
     alignItems: "center",
     justifyContent: "center",
-  } ,
-  butonheader:{
-    flexDirection:'row' , justifyContent:'space-between'  , margin:width*0.02  , 
+  },
+  butonheader: {
+    flexDirection: 'row', justifyContent: 'space-between', margin: width * 0.02,
   }
 });
 
