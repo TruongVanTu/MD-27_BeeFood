@@ -151,14 +151,14 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         borderRadius: 8,
         paddingHorizontal: 15,
-        backgroundColor: '#ffffff',
+        backgroundColor: 'lightblue',
         elevation: 2, // Tạo hiệu ứng nổi
     },
     passwordContainer: {
         width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#ffffff',
+        backgroundColor: 'lightblue',
         borderRadius: 8,
         elevation: 2,
         marginBottom: 20,
