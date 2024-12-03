@@ -49,7 +49,10 @@ const History = ({ navigation }) => {
         try {
             const response = await fetch(URL+'api/history');
             const data = await response.json();
-            const filteredData = data.filter(item => item.userId === dataUid);
+
+            const filteredData = data
+            .filter(item => item.userId === dataUid)
+            .sort((a, b) => b._id.localeCompare(a._id));
             setHistoryData(filteredData);
         } catch (error) {
             console.error('Error fetching data:', error);

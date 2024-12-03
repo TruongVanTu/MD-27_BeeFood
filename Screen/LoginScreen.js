@@ -137,44 +137,66 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#f9f9f9', // Màu nền tổng thể
+        paddingHorizontal: 20,
     },
     logo: {
-        width: 150,
-        height: 100,
-        marginBottom: 80,
+        width: 180,
+        height: 120,
+        marginBottom: 40,
     },
     input: {
-        width: '80%',
+        width: '100%',
+        height: 50,
         marginBottom: 20,
-        backgroundColor: 'lightblue',
+        borderRadius: 8,
+        paddingHorizontal: 15,
+        backgroundColor: '#ffffff',
+        elevation: 2, // Tạo hiệu ứng nổi
     },
     passwordContainer: {
-        width: '80%',
+        width: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#ffffff',
+        borderRadius: 8,
+        elevation: 2,
         marginBottom: 20,
-        position: 'relative',
-        flexDirection: 'row', // Đặt trong một dòng
-        alignItems: 'center', // Căn giữa theo chiều dọc
     },
     passwordInputField: {
-
-        flex: 1, // Để TextInput mở rộng để điền dữ liệu
-        backgroundColor: 'lightblue',
+        flex: 1,
+        height: 50,
+        paddingHorizontal: 15,
+        borderRadius: 8,
+        backgroundColor: 'transparent',
     },
     passwordIcon: {
-        position: 'absolute',
-        right: 10,
+        marginRight: 15,
     },
     btn_login: {
-        width: '80%',
-        marginTop: 30,
+        width: '100%',
+        height: 50,
         backgroundColor: '#319AB4',
         borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 20,
+        elevation: 3,
+    },
+    btn_login_text: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 16,
     },
     registerText: {
         marginTop: 20,
         fontSize: 15,
+        textAlign: 'center',
+        color: '#777',
     },
     registerLink: {
-        color: 'blue',
+        color: '#319AB4',
+        fontWeight: 'bold',
+        textDecorationLine: 'underline',
     },
 });
