@@ -94,103 +94,48 @@ export default function UserInfor() {
     };
     
 
-    // const pickImage = async () => {
-    //     if (isEditing) {
-    //         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    //         if (status !== 'granted') {
-    //             alert('Quyền truy cập thư viện ảnh bị từ chối!');
-    //             return;
-    //         }
-    //
-    //         const result = await ImagePicker.launchImageLibraryAsync({
-    //             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    //             allowsEditing: true,
-    //             aspect: [4, 3],
-    //             quality: 1,
-    //         });
-    //
-    //         if (!result.cancelled) {
-    //             const formData = new FormData();
-    //             formData.append('avatar', {
-    //                 uri: result.uri,
-    //                 type: 'image/jpeg',
-    //                 name: 'avatar.jpg',
-    //             });
-    //
-    //             try {
-    //                 const response = await fetch(URL + `api/users/update-avatar/${userId}`, {
-    //                     method: 'POST',
-    //                     headers: {
-    //                         Accept: 'application/json',
-    //                         'Content-Type': 'multipart/form-data',
-    //                         Authorization: `Bearer ${token}`,
-    //                     },
-    //                     body: formData,
-    //                 });
-    //
-    //                 if (response.status === 200) {
-    //                     const data = await response.json();
-    //                     setEditedUserInfo({
-    //                         ...editedUserInfo,
-    //                         avatar: data.avatarPath,
-    //                     });
-    //                     Alert.alert('Thông báo', 'Cập nhật ảnh đại diện thành công');
-    //                 } else {
-    //                     Alert.alert('Lỗi', 'Cập nhật ảnh đại diện thất bại');
-    //                 }
-    //             } catch (error) {
-    //                 console.error('Lỗi khi tải ảnh lên:', error);
-    //             }
-    //         }
-    //     } else {
-    //         alert('Bạn cần bật chế độ chỉnh sửa để thay đổi ảnh đại diện.');
-    //     }
-    // };
+  
     
     const handleSaveChanges = async () => {
-       // Kiểm tra nếu mật khẩu cũ hoặc mật khẩu mới không có giá trị
-    if (!editedUserInfo.currentPassword) {
-        return Alert.alert('Lỗi', 'Bạn cần nhập mật khẩu cũ để xác nhận.');
-    }
-
-    if (!editedUserInfo.password) {
-        return Alert.alert('Lỗi', 'Bạn cần nhập mật khẩu mới.');
-    }
-
-        try {
+  
+      
             const updateData = {
                 username: editedUserInfo.username,
-                password: editedUserInfo.password,
                 phone: editedUserInfo.phone,
-                currentPassword: editedUserInfo.currentPassword, // Mật khẩu cũ
                 gender: editedUserInfo.gender,
                 birthday: editedUserInfo.birthday,
             };
-    
-            const response = await fetch(URL + `api/users/update/${userId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(updateData),
-            });
-    
-            console.log('Response status:', response.status);
-            const responseData = await response.json();
-            console.log('Response data:', responseData);
-    
-            if (response.status === 200) {
-                Alert.alert('Thông báo', 'Cập nhật thông tin thành công');
-                setIsEditing(false);
-                fetchUserInfo(userId); // Làm mới thông tin hiển thị
-            } else {
-                 Alert.alert('Lỗi', responseData.error || 'Cập nhật thất bại');
+             // Kiểm tra nếu có mật khẩu mới thì thêm vào dữ liệu
+            if (editedUserInfo.password) {
+                if (!editedUserInfo.currentPassword) {
+                    return Alert.alert('Lỗi', 'Bạn cần nhập mật khẩu cũ để xác nhận.');
+                }
+                updateData.password = editedUserInfo.password;
+                updateData.currentPassword = editedUserInfo.currentPassword; // Dữ liệu mật khẩu cũ
             }
-        } catch (error) {
-           console.error('Lỗi khi cập nhật:', error);
-           Alert.alert('Lỗi', 'Đã xảy ra lỗi khi cập nhật thông tin.');
-        }
+            try {
+                const response = await fetch(URL + `api/users/update/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(updateData),
+                });
+        
+                const responseData = await response.json();
+        
+                if (response.status === 200) {
+                    Alert.alert('Thông báo', 'Cập nhật thông tin thành công');
+                    setIsEditing(false);
+                    fetchUserInfo(userId); // Làm mới thông tin
+                } else {
+                    Alert.alert('Lỗi', responseData.error || 'Cập nhật thất bại');
+                }
+            } catch (error) {
+                console.error('Lỗi khi cập nhật:', error);
+                Alert.alert('Lỗi', 'Đã xảy ra lỗi khi cập nhật thông tin.');
+            }
     };
     
 
@@ -239,12 +184,12 @@ export default function UserInfor() {
         },
         {
             key: 'password',
-            label: 'Xác nhận mật khẩu mới',
+            label: 'Mật khẩu mới',
             render: () =>
                 isEditing ? (
                     <TextInput
                         style={styles.textInput}
-                        placeholder="Xác nhận mật khẩu mới"
+                        placeholder="Nhập mật khẩu mới"
                         secureTextEntry
                         onChangeText={(text) =>
                             setEditedUserInfo({ ...editedUserInfo, password: text })
