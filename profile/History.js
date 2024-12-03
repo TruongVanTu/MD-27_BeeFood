@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'white',
+        marginTop:20
     },
     // Các styles khác của bạn
 });
