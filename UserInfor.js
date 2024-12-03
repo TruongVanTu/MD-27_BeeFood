@@ -322,7 +322,7 @@ export default function UserInfor() {
                     </View>
                 </View>
             ) : (
-                <Text>Đang tải thông tin...</Text>
+                <Text>Vui lòng đăng nhập</Text>
             )}
 
             {isEditing && (
@@ -338,6 +338,7 @@ export default function UserInfor() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        marginTop:30
     },
     horizontalContainer: {
         flexDirection: 'column',
