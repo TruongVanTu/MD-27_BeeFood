@@ -83,7 +83,7 @@ const ProductsFavorite = ({navigation}) => {
     </View>
   );
   return (
-    <SafeAreaView style={{flex: 1 , backgroundColor:'white' }}>
+    <SafeAreaView style={{flex: 1 , backgroundColor:'white', paddingTop:20}}>
      <ToolBar title="Sản phẩm yêu thích" onBackPress={() => navigation.goBack()} />
       <FlatList data={datafavorite}
       keyExtractor={(item) =>item._id.toString()}

@@ -39,6 +39,7 @@ const ProfileScreen = ({ route, navigation }) => {
     try {
       await AsyncStorage.removeItem('username');
       await AsyncStorage.removeItem('_id'); // Xóa username khỏi AsyncStorage
+      await AsyncStorage.setItem('isLogin', 'false');
       setIsLoggedIn(false);
       setUsername('');
       navigation.navigate('Home');
