@@ -34,7 +34,7 @@ const AllRestaurnat = ({route}) => {
      , [])
      
   return (
-    <View style={{ flex:1 , backgroundColor:'white'}}>
+    <View style={{ flex:1 , backgroundColor:'white', paddingTop:25}}>
 
       <ToolBar title="Tất cả nhà hàng" onBackPress={() => navigation.goBack()} />
       
