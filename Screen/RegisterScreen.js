@@ -131,53 +131,57 @@ export default function RegisterScreen() {
         <View style={styles.container}>
             <Image style={styles.logo} source={require('./../Image/Logo_BeeFood.png')} />
             <TextInput
-                label="Tên đăng nhập"
-                value={username}
-                onChangeText={(text) => setUsername(text)}
-                style={styles.input}
+                 label="Tên đăng nhập"
+                 value={username}
+                 onChangeText={(text) => setUsername(text)}
+                 style={styles.input}
+                 theme={{ colors: { primary: '#319AB4' } }}
             />
             {validateUser !== '' && <Text style={styles.errorText}>{validateUser}</Text>}
             <TextInput
-                label="Số điện thoại"
-                value={phone}
-                onChangeText={(text) => setPhone(text)}
-                style={styles.input}
+                 label="Số điện thoại"
+                 value={phone}
+                 onChangeText={(text) => setPhone(text)}
+                 style={styles.input}
+                 theme={{ colors: { primary: '#319AB4' } }}
             />
             {validatePhone !== '' && <Text style={styles.errorText}>{validatePhone}</Text>}
 
             <View style={styles.passwordContainer}>
                 <TextInput
-                    label="Mật khẩu"
-                    value={password}
-                    secureTextEntry={!showPassword}
-                    onChangeText={(text) => setPassword(text)}
-                    style={styles.passwordInputField}
+                     label="Mật khẩu"
+                     value={password}
+                     secureTextEntry={!showPassword}
+                     onChangeText={(text) => setPassword(text)}
+                     style={styles.passwordInputField}
+                     theme={{ colors: { primary: '#319AB4' } }}
                 />
                 <Icon
-                    name={showPassword ? 'eye-slash' : 'eye'}
-                    size={20}
-                    color="gray"
-                    onPress={() => setShowPassword(!showPassword)}
-                    style={styles.passwordIcon}
+                     name={showPassword ? 'eye-slash' : 'eye'}
+                     size={20}
+                     color="gray"
+                     onPress={() => setShowPassword(!showPassword)}
+                     style={styles.passwordIcon}
                 />
 
             </View>
             {validatePass !== '' && <Text style={styles.errorText}>{validatePass}</Text>}
             <View style={styles.passwordContainer}>
                 <TextInput
-                    label="Nhập lại mật khẩu"
-                    value={rePassword}
-                    secureTextEntry={!showRePassword}
-                    onChangeText={(text) => setRePassword(text)}
-                    style={styles.passwordInputField}
+                      label="Nhập lại mật khẩu"
+                      value={rePassword}
+                      secureTextEntry={!showRePassword}
+                      onChangeText={(text) => setRePassword(text)}
+                      style={styles.passwordInputField}
+                      theme={{ colors: { primary: '#319AB4' } }}
                 />
 
                 <Icon
-                    name={showRePassword ? 'eye-slash' : 'eye'}
-                    size={20}
-                    color="gray"
-                    onPress={() => setShowRePassword(!showRePassword)}
-                    style={styles.passwordIcon}
+                     name={showRePassword ? 'eye-slash' : 'eye'}
+                     size={20}
+                     color="gray"
+                     onPress={() => setShowRePassword(!showRePassword)}
+                     style={styles.passwordIcon}
                 />
             </View>
             {validaRepass !== '' && <Text style={styles.errorText}>{validaRepass}</Text>}
@@ -188,6 +192,9 @@ export default function RegisterScreen() {
             >
                 ĐĂNG KÝ
             </Button>
+                    <Text style={styles.backText} >
+            Đã có tài khoản? <Text style={styles.backLink } onPress={() => navigation.navigate('Login')}>Quay lại đăng nhập</Text>
+        </Text>
         </View>
     );
 }
@@ -196,6 +203,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#f9f9f9',
     },
     logo: {
         width: 150,
@@ -206,18 +214,19 @@ const styles = StyleSheet.create({
         width: '80%',
         marginBottom: 20,
         backgroundColor: 'lightblue',
+        borderRadius: 5,
     },
     passwordContainer: {
         width: '80%',
         marginBottom: 20,
         position: 'relative',
-        flexDirection: 'row', // Đặt trong một dòng
-        alignItems: 'center', // Căn giữa theo chiều dọc
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     passwordInputField: {
-
-        flex: 1, // Để TextInput mở rộng để điền dữ liệu
+        flex: 1,
         backgroundColor: 'lightblue',
+        borderRadius: 5,
     },
     passwordIcon: {
         position: 'absolute',
@@ -229,11 +238,22 @@ const styles = StyleSheet.create({
         backgroundColor: '#319AB4',
         borderRadius: 10,
     },
-    registerText: {
-        marginTop: 20,
-        fontSize: 15,
+    errorText: {
+        color: 'red',
+        fontSize: 12,
+        marginTop: -10,
+        marginBottom: 10,
     },
-    registerLink: {
-        color: 'blue',
-    },
+    backText: {
+    marginTop: 20,
+    fontSize: 15,
+    color: '#777',
+    textAlign: 'center',
+},
+backLink: {
+    color: '#319AB4', // Màu nhấn mạnh
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+},
+
 });
