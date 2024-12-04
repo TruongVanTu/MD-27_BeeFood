@@ -30,36 +30,36 @@ const PayScreen = ({ route, navigation }) => {
   // Sử dụng trạng thái cho quantity và totalPrice
   const [text, setText] = useState('');
   const deliveryFee = 35000;
-  const [discount , setDiscount] = useState(0)
+  const [discount, setDiscount] = useState(0)
 
-  const[IdVoucher , setDataIdVoucher] = useState(null)
+  const [IdVoucher, setDataIdVoucher] = useState(null)
   const [paymentMethod, setPaymentMethod] = useState('cash'); // 'cash' hoặc 'bank'
 
   const [isCheckOrderModalVisible, setCheckOrderModalVisible] = useState(false);
   const [isEditAddressModalVisible, setEditAddressModalVisible] = useState(false);
   const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);
   const [isListVoucherModal, setIsListVoucherModal] = useState(false);
-  const [voucher , setvoucher] = useState([])
-    useEffect(()=>{
-        console.log("ddataa restaurant" , products[0].restaurantId);
-            const fetchData = async () => {
-              try {
-                const response = await fetch(URL+`api/voucher/getVoucherInRestaurant/${products[0].restaurantId}`);
-                const jsonData = await response.json();
-      
-                const filteredVouchers = jsonData.list.filter(
-                  (voucher) => voucher.quantity > 0
-                );
-                setvoucher(filteredVouchers)
-              } catch (error) {
-                console.error(error);
-              }
-            };
-        
-            fetchData();
-    
-       
-        },[])
+  const [voucher, setvoucher] = useState([])
+  useEffect(() => {
+    console.log("ddataa restaurant", products[0].restaurantId);
+    const fetchData = async () => {
+      try {
+        const response = await fetch(URL + `api/voucher/getVoucherInRestaurant/${products[0].restaurantId}`);
+        const jsonData = await response.json();
+
+        const filteredVouchers = jsonData.list.filter(
+          (voucher) => voucher.quantity > 0
+        );
+        setvoucher(filteredVouchers)
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+
+
+  }, [])
 
   //lấy vị trí hiện tại người dùng
   const [address, setAddress] = useState('Đang lấy vị trí...');
@@ -98,15 +98,15 @@ const PayScreen = ({ route, navigation }) => {
       status: 0, // Trạng thái đơn hàng
       notes: text, // Ghi chú cho đơn hàng
       // Thêm thông tin sản phẩm nếu cần
-      voucherId:IdVoucher,
-      time: new Date(),
+      voucherId: IdVoucher,
+      time: new Date().toISOString(),
       products: products.map(product => ({
-      restaurantId:product.restaurantId,
-      productId: product.productId, // Giả sử mỗi sản phẩm có trường 'id'
-      name: product.name, // Tên sản phẩm
-      image:product.image,
-      quantity: product.quantity, // Số lượng
-      price: product.price // Giá sản phẩm
+        restaurantId: product.restaurantId,
+        productId: product.productId, // Giả sử mỗi sản phẩm có trường 'id'
+        name: product.name, // Tên sản phẩm
+        image: product.image,
+        quantity: product.quantity, // Số lượng
+        price: product.price // Giá sản phẩm
       })),
 
     };
@@ -164,7 +164,7 @@ const PayScreen = ({ route, navigation }) => {
 
 
     if (paymentMethod === 'bank') {
-      navigation.navigate('PaymentScreen', { orderData: newOrderData , products:products });
+      navigation.navigate('PaymentScreen', { orderData: newOrderData, products: products });
     } else {
       setCheckOrderModalVisible(true);
     }
@@ -179,7 +179,7 @@ const PayScreen = ({ route, navigation }) => {
   const toggleListVoucher = () => {
     setIsListVoucherModal(!isListVoucherModal);
 
-    console.log("vào đây này" , isListVoucherModal);
+    console.log("vào đây này", isListVoucherModal);
   };
   const handleConfirmAddress = (newAddress) => {
     setAddress(newAddress); // Cập nhật địa chỉ mới
@@ -202,7 +202,7 @@ const PayScreen = ({ route, navigation }) => {
   const goBack = () => {
     navigation.goBack();
   };
-  
+
 
 
   // Sử dụng hook useEffect để cập nhật totalPrice mỗi khi quantity thay đổi
@@ -217,11 +217,11 @@ const PayScreen = ({ route, navigation }) => {
   }, [orderData]);
 
 
-  const handleConfirmVoucher =(data)=>{
-      setDiscount(data)
+  const handleConfirmVoucher = (data) => {
+    setDiscount(data)
   }
 
-  const handleConfirmIDVoucher = (data)=>{
+  const handleConfirmIDVoucher = (data) => {
     setDataIdVoucher(data)
   }
   return (
@@ -230,26 +230,26 @@ const PayScreen = ({ route, navigation }) => {
         title="Thanh Toán Đơn Hàng"
         onBackPress={() => navigation.goBack()}
       />
-        <View style={styles.warningContainer}>
-                <Icon name="exclamation-triangle" size={24} color="#FFCC00" />
-                <Text style={styles.warningText}>Bạn có thể bấm thay đổi địa điểm, khi cập nhật địa chỉ quá lâu!</Text>
-            </View>
+      <View style={styles.warningContainer}>
+        <Icon name="exclamation-triangle" size={24} color="#FFCC00" />
+        <Text style={styles.warningText}>Bạn có thể bấm thay đổi địa điểm, khi cập nhật địa chỉ quá lâu!</Text>
+      </View>
 
       <View style={styles.container}>
-      
-     
+
+
         <ScrollView >
-        
+
           <View style={styles.ngang}>
             <Text style={styles.deliveryText}>Giao hàng đến:</Text>
             <TouchableOpacity style={styles.buttondd} onPress={toggleEditAddressModal}>
-            <Text>Thay đổi địa điểm</Text>
-          </TouchableOpacity>
-          <EditAddressModal
-            isVisible={isEditAddressModalVisible}
-            setIsVisible={setEditAddressModalVisible}
-            onConfirmAddress={handleConfirmAddress}
-          />
+              <Text>Thay đổi địa điểm</Text>
+            </TouchableOpacity>
+            <EditAddressModal
+              isVisible={isEditAddressModalVisible}
+              setIsVisible={setEditAddressModalVisible}
+              onConfirmAddress={handleConfirmAddress}
+            />
 
           </View>
           <Text style={styles.addressText}>{address}</Text>
@@ -257,31 +257,35 @@ const PayScreen = ({ route, navigation }) => {
             <CurrentLocationMap />
           </View>
 
-          {products.map(products => <ProductItemOder products={products} />)}
+          {products.map((product) => (
+            <ProductItemOder key={product._id} products={product} />
+          ))}
           <TouchableOpacity
-              onPress={toggleListVoucher}
-              style={{backgroundColor: '#319AB4', 
-              padding: 5, 
-              borderRadius: 5, 
-              justifyContent: 'center', 
-              alignItems: 'center', 
-              shadowColor: '#000', 
+            onPress={toggleListVoucher}
+            style={{
+              backgroundColor: '#319AB4',
+              padding: 5,
+              borderRadius: 5,
+              justifyContent: 'center',
+              alignItems: 'center',
+              shadowColor: '#000',
               shadowOffset: { width: 0, height: 2 },
               shadowOpacity: 0.25,
               shadowRadius: 3.84,
               elevation: 5,
-              marginBottom:20}}
-              activeOpacity={0.7} // Cung cấp mức độ mờ khi nút được nhấn
-            >
-              <Text style={styles.buttonOrderText}>Lấy voucher</Text>
-            </TouchableOpacity>
+              marginBottom: 20
+            }}
+            activeOpacity={0.7} // Cung cấp mức độ mờ khi nút được nhấn
+          >
+            <Text style={styles.buttonOrderText}>Lấy voucher</Text>
+          </TouchableOpacity>
           <ListVoucherModal visible={isListVoucherModal}
-          navigation={navigation}
-          setisvisible={setIsListVoucherModal}
-          products={voucher} 
-          onConfirmVoucher={handleConfirmVoucher}
-          onConfirmIDVoucher={handleConfirmIDVoucher}
-          totals = {totalproduct}/>
+            navigation={navigation}
+            setisvisible={setIsListVoucherModal}
+            products={voucher}
+            onConfirmVoucher={handleConfirmVoucher}
+            onConfirmIDVoucher={handleConfirmIDVoucher}
+            totals={totalproduct} />
 
 
 
@@ -343,12 +347,12 @@ const PayScreen = ({ route, navigation }) => {
 
           </View>
           <TouchableOpacity
-              onPress={handleOrderPress}
-              style={styles.buttonOrder}
-              activeOpacity={0.7} // Cung cấp mức độ mờ khi nút được nhấn
-            >
-              <Text style={styles.buttonOrderText}>Đặt hàng</Text>
-            </TouchableOpacity>
+            onPress={handleOrderPress}
+            style={styles.buttonOrder}
+            activeOpacity={0.7} // Cung cấp mức độ mờ khi nút được nhấn
+          >
+            <Text style={styles.buttonOrderText}>Đặt hàng</Text>
+          </TouchableOpacity>
           <CheckOrderModal
             modalVisible={isCheckOrderModalVisible}
             setModalVisible={setCheckOrderModalVisible}
@@ -362,7 +366,7 @@ const PayScreen = ({ route, navigation }) => {
             navigation={navigation}
             products={products}
           />
- 
+
         </ScrollView>
       </View>
       {/* <Toast ref={(ref) => Toast.setRef(ref)} /> */}
@@ -484,37 +488,37 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonOrder: {
-    backgroundColor: '#319AB4', 
-    padding: 15, 
-    borderRadius: 5, 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    shadowColor: '#000', 
+    backgroundColor: '#319AB4',
+    padding: 15,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    marginBottom:20
+    marginBottom: 20
   },
   buttonOrderText: {
     color: 'white',
-    fontWeight: 'bold', 
-    fontSize: 16, 
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 
   warningContainer: {
-    flexDirection: 'row', 
+    flexDirection: 'row',
     alignItems: 'center',
-    padding: 10, 
-    backgroundColor: '#FFFBEA', 
-    margin: 10, 
+    padding: 10,
+    backgroundColor: '#FFFBEA',
+    margin: 10,
     borderRadius: 5,
-},
-warningText: {
-    marginLeft: 10, 
-    color: '#555', 
-    fontSize: 10, 
-},
+  },
+  warningText: {
+    marginLeft: 10,
+    color: '#555',
+    fontSize: 10,
+  },
 });
 
 export default PayScreen;

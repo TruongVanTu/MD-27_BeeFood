@@ -1,4 +1,4 @@
-import {React,useEffect,useState} from 'react';
+import { React, useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import ToolBar from '../components/ToolBar';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -9,58 +9,58 @@ import Stars from 'react-native-stars'; // Import from FontAwesome
 import Toast from 'react-native-toast-message';
 
 const Detailhistory = ({ route, navigation }) => {
-    const { orderId } = route.params; // Get the orderId passed via navigation
-    const [orderDetails, setOrderDetails] = useState(null);
-    const deliveryFee = 35000;
-    const discount = 0;
-    const [showRating, setShowRating] = useState(false);
-    const [starRating, setStarRating] = useState(5);
+  const { orderId } = route.params; // Get the orderId passed via navigation
+  const [orderDetails, setOrderDetails] = useState(null);
+  const deliveryFee = 35000;
+  const discount = 0;
+  const [showRating, setShowRating] = useState(false);
+  const [starRating, setStarRating] = useState(5);
 
-    // Lấy userId từ AsyncStorage
-    const getStatusLabel = (status) => {
-      switch (status) {
-          case 0:
-              return 'Chờ xác nhận';
-          case 1:
-              return 'Đã xác nhận';
-          case 2:
-              return 'Đang giao';
-          case 3:
-              return 'Đã giao';
-          case 4:
-              return 'Đã huỷ';
-          default:
-              return 'Trạng thái không xác định';
-      }
+  // Lấy userId từ AsyncStorage
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case 0:
+        return 'Chờ xác nhận';
+      case 1:
+        return 'Đã xác nhận';
+      case 2:
+        return 'Đang giao';
+      case 3:
+        return 'Đã giao';
+      case 4:
+        return 'Đã huỷ';
+      default:
+        return 'Trạng thái không xác định';
+    }
   };
 
-    
-    useEffect(() => {
-      const fetchOrderDetails = async () => {
-          try {
-              console.log('id:', orderId);
-              const response = await fetch(`${URL}api/don-hang/${orderId}`);
-              const data = await response.json();
-              console.log('data:', data);
-              setOrderDetails(data); // Lưu trữ đối tượng JSON trực tiếp
-          } catch (error) {
-              console.error('Error fetching order details:', error);
-          }
-      };
-      console.log('done',orderDetails);
-      if (!orderDetails) { // Chỉ fetch khi orderDetails là null hoặc undefined
-          fetchOrderDetails();
+
+  useEffect(() => {
+    const fetchOrderDetails = async () => {
+      try {
+        console.log('id:', orderId);
+        const response = await fetch(`${URL}api/don-hang/${orderId}`);
+        const data = await response.json();
+        console.log('data:', data);
+        setOrderDetails(data); // Lưu trữ đối tượng JSON trực tiếp
+      } catch (error) {
+        console.error('Error fetching order details:', error);
       }
+    };
+    console.log('done', orderDetails);
+    if (!orderDetails) { // Chỉ fetch khi orderDetails là null hoặc undefined
+      fetchOrderDetails();
+    }
   }, [orderId]);
 
   const calculateTotalPurchase = (products) => {
     return products.reduce((acc, product) => acc + (product.price * product.quantity), 0);
   };
-  const goHome = async() => {
-      navigation.navigate('Home')
-    };
+  const goHome = async () => {
+    navigation.navigate('Home')
+  };
 
-    //hien thi view danh gia
+  //hien thi view danh gia
   const toggleRatingView = () => {
     setShowRating(!showRating);
   };
@@ -70,11 +70,11 @@ const Detailhistory = ({ route, navigation }) => {
     console.log("id user", storedData);
     console.log("id nh", orderDetails.products[0].restaurantId._id);
     // const isLogin = await AsyncStorage.getItem('isLogin');
-  
-   
+
+
     console.log("Star Rating", starRating);
     const apiUrl = `${URL}api/evaluate`;
-  
+
     fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -86,120 +86,121 @@ const Detailhistory = ({ route, navigation }) => {
         star: starRating // Use the starRating state here
       })
     })
-    .then(async response => {
-      const data = await response.json();
-      if (response.ok) {
-        // Handle success
-        console.log("Success:", data);
-        Toast.show({
-          type: 'success',
-          text1: 'Cảm ơn bạn đã đánh giá sản phẩm',
-        });
-      } else {
-        // Handle server errors
-        console.log("Server Error:", data);
+      .then(async response => {
+        const data = await response.json();
+        if (response.ok) {
+          // Handle success
+          console.log("Success:", data);
+          Toast.show({
+            type: 'success',
+            text1: 'Cảm ơn bạn đã đánh giá sản phẩm',
+          });
+        } else {
+          // Handle server errors
+          console.log("Server Error:", data);
+          Toast.show({
+            type: 'error',
+            text1: 'Đánh giá thất bại',
+            text2: data.message,
+          });
+          throw new Error(data.message || "Lỗi mạng hoặc máy chủ");
+        }
+      })
+      .catch(error => {
+        console.error("Có lỗi khi đánh giá", error);
         Toast.show({
           type: 'error',
           text1: 'Đánh giá thất bại',
-          text2: data.message,
+          text2: error.toString(),
         });
-        throw new Error(data.message || "Lỗi mạng hoặc máy chủ");
-      }
-    })
-    .catch(error => {
-      console.error("Có lỗi khi đánh giá", error);
-      Toast.show({
-        type: 'error',
-        text1: 'Đánh giá thất bại',
-        text2: error.toString(),
       });
-    });
   };
 
 
   return (
-    <View style={{flex:1}}>
-    <ToolBar title="Thông tin đơn hàng" onBackPress={() => navigation.goBack()} />
-    {orderDetails && ( 
-                <>
-    <ScrollView >
-      <View style={styles.orderDetails}>
-        <Text style={styles.orderStatus}>BeeFood</Text>
-        <Text style={styles.orderStatus}>Trạng thái: {getStatusLabel(orderDetails.status)}</Text>
-        <Text style={styles.orderNumber}>Đơn hàng: B-{orderDetails._id}</Text>
-      </View>
-      <View style={styles.addressContainer}>
-        <Text style={styles.restaurantAddress}>Nhà hàng: {orderDetails.products[0].restaurantId.name}</Text>
-        <Image
+    <SafeAreaView style={{ flex: 1, paddingTop: 20 }}>
+      <ToolBar title="Thông tin đơn hàng" onBackPress={() => navigation.goBack()} />
+      {orderDetails && (
+        <>
+          <ScrollView >
+            <View style={styles.orderDetails}>
+              <Text style={styles.orderStatus}>BeeFood</Text>
+              <Text style={styles.orderStatus}>Trạng thái: {getStatusLabel(orderDetails.status)}</Text>
+              <Text style={styles.orderNumber}>Đơn hàng: B-{orderDetails._id}</Text>
+            </View>
+            <View style={styles.addressContainer}>
+              <Text style={styles.restaurantAddress}>Nhà hàng: {orderDetails.products[0].restaurantId.name}</Text>
+              <Image
                 source={require("./../Image//downarrow.png")}
                 style={styles.icon}
               />
-              
-        <Text style={styles.deliveryAddress}>Địa điểm đến: {orderDetails.address}</Text>
-      </View>
-      <View style={styles.foodItemContainer}>
-      {orderDetails.products.map((product, index) => (
-         <ProductItemOrder products={product} index={index}/>
-        ))}
 
-      </View>
-      
-        <View style={styles.containerHD}>
-            <View style={styles.row}>
-              <Text style={styles.label}>Đơn mua</Text>
-              <Text style={styles.value}>{calculateTotalPurchase(orderDetails.products)}đ</Text>
+              <Text style={styles.deliveryAddress}>Địa điểm đến: {orderDetails.address}</Text>
             </View>
-            <View style={styles.row}>
-              <Text style={styles.label}>Phí giao hàng (dự kiến)</Text>
-              <Text style={styles.value}>{deliveryFee}đ</Text>
+            <View style={styles.foodItemContainer}>
+              {orderDetails.products.map((product, index) => (
+                <ProductItemOrder key={product._id || index} products={product} index={index} />
+              ))}
+
+
             </View>
-            <View style={styles.row}>
-              <Text style={styles.label}>Khuyến mãi</Text>
-              <Text style={styles.value}>{!orderDetails.voucherId?.money?0:orderDetails.voucherId?.money}đ</Text>
-              {/* {!!orderDetails.voucherId?.money ? 
+
+            <View style={styles.containerHD}>
+              <View style={styles.row}>
+                <Text style={styles.label}>Đơn mua</Text>
+                <Text style={styles.value}>{calculateTotalPurchase(orderDetails.products)}đ</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.label}>Phí giao hàng (dự kiến)</Text>
+                <Text style={styles.value}>{deliveryFee}đ</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.label}>Khuyến mãi</Text>
+                <Text style={styles.value}>{!orderDetails.voucherId?.money ? 0 : orderDetails.voucherId?.money}đ</Text>
+                {/* {!!orderDetails.voucherId?.money ? 
       <Text> 0d</Text>
       :
       <Text> {orderDetails.voucherId?.money}</Text>
     } */}
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.totalLabel}>Tổng thanh toán</Text>
+                <Text style={styles.totalValue}>{orderDetails.toltalprice}đ</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.totaltt}>Phương thức thanh toán</Text>
+                <Text style={styles.totaltt}>{orderDetails.phuongthucthanhtoan}</Text>
+              </View>
             </View>
-            <View style={styles.row}>
-              <Text style={styles.totalLabel}>Tổng thanh toán</Text>
-              <Text style={styles.totalValue}>{orderDetails.toltalprice}đ</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.totaltt}>Phương thức thanh toán</Text>
-              <Text style={styles.totaltt}>{orderDetails.phuongthucthanhtoan}</Text>
-            </View>
-          </View>
-          
-      
 
-      <View style={styles.helpContainer}>
-      
-            
-            
 
-      {orderDetails && orderDetails.status === 3 && (
+
+            <View style={styles.helpContainer}>
+
+
+
+
+              {orderDetails && orderDetails.status === 3 && (
                 <>
-                <TouchableOpacity onPress={toggleRatingView}>
-                  <View style={{flexDirection:'row',justifyContent: 'center',alignItems:'center'}}>
-                  <Text style={styles.buttonText2}>Đánh giá</Text>
-                  <Image
-                      source={require("./../Image//downarrow.png")}
-                      style={styles.icon}
-                    />
+                  <TouchableOpacity onPress={toggleRatingView}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                      <Text style={styles.buttonText2}>Đánh giá</Text>
+                      <Image
+                        source={require("./../Image//downarrow.png")}
+                        style={styles.icon}
+                      />
                     </View>
-                </TouchableOpacity>
+                  </TouchableOpacity>
                   {showRating && (
                     <View style={{ alignItems: 'center' }}>
                       <Stars
                         default={5}
                         count={5}
-                        half={false} 
-                        update={(val)=>{ setStarRating(val) }}
+                        half={false}
+                        update={(val) => { setStarRating(val) }}
                         starSize={50}
-                        fullStar={<Icon name={'star'} size={50} style={[styles.myStarStyle, { color: 'yellow' }]}/>}
-                        emptyStar={<Icon name={'star-o'} size={50} style={[styles.myStarStyle, { color: 'blue' }]}/>}
+                        fullStar={<Icon name={'star'} size={50} style={[styles.myStarStyle, { color: 'yellow' }]} />}
+                        emptyStar={<Icon name={'star-o'} size={50} style={[styles.myStarStyle, { color: 'blue' }]} />}
                       />
                       <TouchableOpacity
                         style={[styles.button, styles.bottomButton]}
@@ -209,23 +210,23 @@ const Detailhistory = ({ route, navigation }) => {
                       </TouchableOpacity>
                     </View>
                   )}
-                  
+
                 </>
               )}
 
 
-        
-        <TouchableOpacity style={styles.reorderButton} onPress={goHome}>
-          <Text style={styles.reorderButtonText}>Quay về trang chủ</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
-   
-    </>
-   
-            )}
-            <Toast ref={(ref) => Toast.setRef(ref)} />
-    </View>
+
+              <TouchableOpacity style={styles.reorderButton} onPress={goHome}>
+                <Text style={styles.reorderButtonText}>Quay về trang chủ</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+
+        </>
+
+      )}
+      <Toast />
+    </SafeAreaView>
   );
 };
 
@@ -292,13 +293,13 @@ const styles = StyleSheet.create({
   restaurantAddress: {
     fontSize: 16,
     color: '#000',
-    fontWeight:'bold'
+    fontWeight: 'bold'
   },
   deliveryAddress: {
     fontSize: 16,
     color: '#000',
     marginTop: 4,
-    fontWeight:'bold'
+    fontWeight: 'bold'
   },
   distance: {
     fontSize: 16,
@@ -370,7 +371,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#ffffff',
     fontWeight: 'bold',
-    
+
   },
   reorderButtonText: {
     fontSize: 16,
@@ -470,7 +471,7 @@ const styles = StyleSheet.create({
     margin: 5,
 
   },
-  
+
 });
 
 export default Detailhistory;

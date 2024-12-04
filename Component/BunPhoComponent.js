@@ -32,7 +32,7 @@ const BunPhoComponent = ({navigation}) => {
     }
   };
   return (
-    <SafeAreaView> 
+    <SafeAreaView style={{paddingTop:25}}> 
      <ToolBar title="Bún phở" onBackPress={() => navigation.goBack()} />
     <ScrollView >
         {bunpho.map((data, index) =>

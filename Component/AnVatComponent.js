@@ -33,7 +33,7 @@ const AnVatComponent = ({ navigation }) => {
     }
   };
   return (
-    <SafeAreaView >
+    <SafeAreaView style={{paddingTop:25}}>
       <ToolBar title="Trà Sữa" onBackPress={() => navigation.goBack()} />
       <View>
         <ScrollView >

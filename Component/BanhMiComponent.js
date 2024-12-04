@@ -33,7 +33,7 @@ const BanhMiComponent = ({navigation}) => {
     }
   };
   return (
-    <SafeAreaView > 
+    <SafeAreaView style={{paddingTop:25}}> 
     
     <ToolBar title="Bánh mì" onBackPress={() => navigation.goBack()} />
     <ScrollView >

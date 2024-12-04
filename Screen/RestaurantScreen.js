@@ -43,7 +43,7 @@ useEffect(()=>{
 
   
         <CoffeeShopScreen  navigation = {navigation} data = {datarestaurnat}/>
-        <View style={{marginTop:height*0.04}}>
+        <View style={{marginTop:height*0.07}}>
         <Stars
                         default={datarestaurnat.average}
                         count={5}

@@ -11,15 +11,15 @@ const SearchComponent = ({ navigation }) => {
     axios.post(URL + 'api/product/getbyname', {
       name: inputText
     }).then(response => {
-      if(response.data.msg==='Không tìm thấy sản phẩm nào.'){
+      if (response.data.msg === 'Không tìm thấy sản phẩm nào.') {
         setData([])
-      }else{
-        setData(response.data); 
+      } else {
+        setData(response.data);
         console.log(response.data, "DATA");
-      
+
       }
 
-     
+
     })
   };
 
@@ -40,7 +40,7 @@ const SearchComponent = ({ navigation }) => {
         <View style={{ flexDirection: 'column', paddingLeft: 10, marginLeft: 10 }}>
           <Text style={{ fontWeight: 'bold', fontSize: 15, color: '#616161' }}>{item.name}</Text>
           <View style={{ flexDirection: 'row' }}>
-            <Image source={{uri: item.image}} style={{ width: 20, height: 20, marginTop: 5 }} />
+            <Image source={{ uri: item.image }} style={{ width: 20, height: 20, marginTop: 5 }} />
             <Text style={{ padding: 5, fontWeight: 'bold', color: '#616161' }}>{item}</Text>
           </View>
           <Text style={{ color: '#616161' }}>{item}</Text>
@@ -50,27 +50,25 @@ const SearchComponent = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView >
+    <SafeAreaView style={{ flex: 1, paddingTop: 25 }}>
       <ToolBar title="Tìm kiếm" onBackPress={() => navigation.goBack()} />
 
       <View style={{ flexDirection: 'row' }}>
-        <TouchableOpacity onPress={() => { navigation.navigate('Search') }}>
-          <TextInput
-            style={{
-              width: 0.8 * width,
-              height: 40,
-              borderRadius: 15,
-              borderWidth: 1,
-              borderColor: 'black',
-              marginLeft: 15,
-              marginTop: 15,
-              paddingLeft: 10,
-            }}
-            value={inputText}
-            onChangeText={(text) => setInputText(text)}
-            placeholder="Nhập từ khóa tìm kiếm"
-          />
-        </TouchableOpacity >
+        <TextInput
+          style={{
+            width: 0.8 * width,
+            height: 40,
+            borderRadius: 15,
+            borderWidth: 1,
+            borderColor: 'black',
+            marginLeft: 15,
+            marginTop: 15,
+            paddingLeft: 10,
+          }}
+          value={inputText}
+          onChangeText={(text) => setInputText(text)}
+          placeholder="Nhập từ khóa tìm kiếm"
+        />
         <View
           style={{
             width: 40,
@@ -82,7 +80,7 @@ const SearchComponent = ({ navigation }) => {
             marginTop: 15,
             alignItems: 'center',
           }}>
-          <TouchableOpacity onPress={handleButtonPress} >
+          <TouchableOpacity onPress={handleButtonPress}>
             <Image
               source={require('./../Image/search.png')}
               style={{ width: 25, height: 25 }}
@@ -90,43 +88,61 @@ const SearchComponent = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
-      <View>
+
+      <View style={{ flex: 1 }}>
         <FlatList
           data={data}
-          horizontal={false} // Hiển thị theo chiều ngang và dọc
-          renderItem={(item, index)=>{
-            console.log(item.name)
-            const product = item.item
-            return(
-              <TouchableOpacity key={index} style={{ margin: 15, flexDirection: 'row', height: 90, alignItems: 'center', marginTop: 20 }} onPress={() => { navigation.navigate('ProductDetail', { product })}} >
-
-                
-
-                <View >
-                <Image source={{ uri: item.item.image }} style={{ borderWidth: 1, width: width * 0.25, height: width * 0.25 , borderRadius:10 }} />
-              </View>
-              <View style={{ flexDirection: 'column', paddingLeft: 10, marginLeft: 10 }}>
-                <Text style={{ fontWeight: 'bold', fontSize: 15, color: '#616161' }}numberOfLines={2}>{item.item.name}
-                </Text>
-                <View style={{ flexDirection: 'row' }}>
-                  
-                  <Text style={{ paddingTop:5 , paddingBottom:5, fontWeight: 'bold', color: '#616161' }}>{item.item.realPrice} {'VND'}</Text>
+          keyExtractor={(item, index) => item._id || index.toString()}
+          renderItem={({ item, index }) => {
+            console.log(item.name);
+            const product = item;
+            const restaurantName = product.restaurantId?.name || 'Không xác định'; // Kiểm tra có dữ liệu không
+            return (
+              <TouchableOpacity
+                style={{
+                  margin: 15,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: 20,
+                  paddingBottom: 10,
+                  borderBottomWidth: 1,
+                  borderBottomColor: '#ccc' // Màu xám nhạt cho line mờ
+                }}
+                onPress={() => { navigation.navigate('ProductDetail', { product }) }}
+              >
+                <View>
+                  <Image
+                    source={{ uri: product.image }}
+                    style={{ borderWidth: 1, width: width * 0.25, height: width * 0.25, borderRadius: 10 }}
+                  />
                 </View>
-                <Text style={{ color: '#616161', width: 0.6 * width }} numberOfLines={4}>{item.item.description}</Text>
-              </View>
-                
+                <View style={{ flexDirection: 'column', paddingLeft: 10, marginLeft: 10, flexShrink: 1 }}>
+                  <Text
+                    style={{ fontWeight: 'bold', fontSize: 15, color: '#616161' }}
+                    numberOfLines={2}
+                  >
+                    {product.name}
+                  </Text>
+                  {/* Hiển thị tên nhà hàng */}
+                  <Text style={{ color: '#616161', marginTop: 5 }}>
+                    Nhà hàng: {restaurantName}
+                  </Text>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text style={{ paddingTop: 5, paddingBottom: 5, fontWeight: 'bold', color: '#616161' }}>
+                      {product.realPrice} VND
+                    </Text>
+                  </View>
+                  <Text style={{ color: '#616161', width: 0.6 * width }} numberOfLines={4}>
+                    {product.description}
+                  </Text>
+                </View>
               </TouchableOpacity>
-            )
+            );
           }}
-          // keyExtractor={(item) => item.id}
-          numColumns={numColumns}
         />
-      
-      </View>
-
-      <View>
       </View>
     </SafeAreaView>
+
   )
 }
 

@@ -32,7 +32,7 @@ const ChickenComponent = ({navigation}) => {
 
 
   return (
-    <SafeAreaView > 
+    <SafeAreaView style={{paddingTop:25}}> 
      <ToolBar title="Gà rán" onBackPress={() => navigation.goBack()} />
     <ScrollView >
         {chicken.map((data, index) =>

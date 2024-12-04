@@ -38,7 +38,7 @@ const ComxuatComponent = ({navigation}) => {
 
 
   return (
-    <SafeAreaView > 
+    <SafeAreaView style={{paddingTop:25}}> 
      <ToolBar title="Cơm xuất" onBackPress={() => navigation.goBack()} />
     
     <ScrollView >

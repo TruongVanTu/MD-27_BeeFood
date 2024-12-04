@@ -33,7 +33,7 @@ const GanbanComponent = ({navigation}) => {
     }
   };
   return (
-    <SafeAreaView style ={{marginTop:0 ,  flex:1}}> 
+    <SafeAreaView style ={{paddingTop:25 ,  flex:1}}> 
      <ToolBar title="Món ngon về bò" onBackPress={() => navigation.goBack()} />
 
     <ScrollView >

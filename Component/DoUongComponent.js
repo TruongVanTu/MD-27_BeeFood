@@ -40,7 +40,7 @@ const DoUongComponent = ({navigation}) => {
  
 
   return (
-    <SafeAreaView > 
+    <SafeAreaView style={{paddingTop:25}}> 
      <ToolBar title="Đồ uống" onBackPress={() => navigation.goBack()} />
     <ScrollView >
         {douong.map((data, index) =>
