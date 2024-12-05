@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, BackHandler, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, BackHandler, Alert, TouchableOpacity } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { ToastAndroid } from 'react-native';
@@ -35,7 +35,7 @@ export default function LoginScreen() {
     }, []);
 
 
-      const handleLogin = () => {
+    const handleLogin = () => {
         const trimmedUsername = username.trim();
         const trimmedPassword = password.trim();
 
@@ -45,17 +45,17 @@ export default function LoginScreen() {
             Toast.show({
                 type: 'error',
                 text1: 'Tên đăng nhập và mật khẩu không được để trống',
-              });
+            });
             return; // Ngừng xử lý
         }
 
         const loginData = {
-            "username":trimmedUsername,
-            "password":trimmedPassword,
+            "username": trimmedUsername,
+            "password": trimmedPassword,
         };
         // Gửi yêu cầu POST
 
-        fetch(URL+'api/users/login', {
+        fetch(URL + 'api/users/login', {
 
 
             method: 'POST',
@@ -65,41 +65,41 @@ export default function LoginScreen() {
             },
             body: JSON.stringify(loginData),
         })
-        .then(async (res) => {
-            const data = await res.json();  // Parse dữ liệu trả về từ máy chủ
-            // console.log("data user ",data);
-            // console.log("data chuan ",data.data._ia);
-    
-            if (res.status === 200) {
-                // Đăng nhập thành công
-                
-                 // Lưu trạng thái isLoggedIn vào AsyncStorage
-                await AsyncStorage.setItem('username', data.data.username);
-                await AsyncStorage.setItem('isLogin', 'true');
-                console.log("data user ",data);
-                // Lưu _id của người dùng vào AsyncStorage nếu _id tồn tại trong dữ liệu trả về
-                if (data.data._id) {
-                    await AsyncStorage.setItem('_id', data.data._id);
-                    setIsLoggedIn(true); // <-- Cập nhật trạng thái isLoggedIn
-                    await AsyncStorage.setItem('isLoggedIn', 'true');
+            .then(async (res) => {
+                const data = await res.json();  // Parse dữ liệu trả về từ máy chủ
+                // console.log("data user ",data);
+                // console.log("data chuan ",data.data._ia);
+
+                if (res.status === 200) {
+                    // Đăng nhập thành công
+
+                    // Lưu trạng thái isLoggedIn vào AsyncStorage
+                    await AsyncStorage.setItem('username', data.data.username);
+                    await AsyncStorage.setItem('isLogin', 'true');
+                    console.log("data user ", data);
+                    // Lưu _id của người dùng vào AsyncStorage nếu _id tồn tại trong dữ liệu trả về
+                    if (data.data._id) {
+                        await AsyncStorage.setItem('_id', data.data._id);
+                        setIsLoggedIn(true); // <-- Cập nhật trạng thái isLoggedIn
+                        await AsyncStorage.setItem('isLoggedIn', 'true');
+                    }
+
+                    navigation.navigate('Appnavigator');
+                } else if (res.status === 401) {
+                    // Đăng nhập thất bại
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Tên đăng nhập hoặc mật khẩu không đúng',
+                    });
                 }
-    
-                navigation.navigate('Appnavigator');
-            } else if (res.status === 401) {
-                // Đăng nhập thất bại
+            })
+            .catch((e) => {
+                console.error(e);
                 Toast.show({
                     type: 'error',
-                    text1: 'Tên đăng nhập hoặc mật khẩu không đúng',
-                  });
-            }
-        })
-        .catch((e) => {
-            console.error(e);
-            Toast.show({
-                type: 'error',
-                text1: 'Lỗi kết nối',
-              });
-        });
+                    text1: 'Lỗi kết nối',
+                });
+            });
     };
 
 
@@ -132,6 +132,11 @@ export default function LoginScreen() {
             <Button mode="contained" onPress={() => handleLogin()} style={styles.btn_login}>
                 ĐĂNG NHẬP
             </Button>
+            <View style={styles.linkContainer}>
+                <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+                    <Text style={styles.forgotPasswordLink}>Quên mật khẩu?</Text>
+                </TouchableOpacity>
+            </View>
             <Text style={styles.registerText}>
                 Chưa có tài khoản?{' '}
                 <Text style={styles.registerLink} onPress={() => navigation.navigate('Register')}>
@@ -208,5 +213,11 @@ const styles = StyleSheet.create({
         color: '#319AB4',
         fontWeight: 'bold',
         textDecorationLine: 'underline',
+    },
+    forgotPasswordLink: {
+        color: '#319AB4',
+        textDecorationLine: 'underline',
+        textAlign: 'center', 
+        marginTop: 15
     },
 });

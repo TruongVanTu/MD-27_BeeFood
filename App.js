@@ -36,6 +36,7 @@ import store from './Redux/StoreAddToCart';
 import { CartProvider } from './Component/CartContext';
 import PaymentScreen from './Service/PaymentScreen';
 import ChangePassword from './ChangePassword';
+import ForgotPassword from './ForgotPassword';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -92,6 +93,7 @@ export default function App() {
                     <Stack.Screen component={Detailhistory} name='Detailhistory' />
 
                     <Stack.Screen component={ChangePassword} name='ChangePassword' />
+                    <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
                 </Stack.Navigator>
             </CartProvider>
         </NavigationContainer>
