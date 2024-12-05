@@ -35,6 +35,7 @@ import ProfileInfor from './profile/ProfileInfor';
 import store from './Redux/StoreAddToCart';
 import { CartProvider } from './Component/CartContext';
 import PaymentScreen from './Service/PaymentScreen';
+import ChangePassword from './ChangePassword';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -90,6 +91,7 @@ export default function App() {
                     <Stack.Screen component={History} name='lichsu' />
                     <Stack.Screen component={Detailhistory} name='Detailhistory' />
 
+                    <Stack.Screen component={ChangePassword} name='ChangePassword' />
                 </Stack.Navigator>
             </CartProvider>
         </NavigationContainer>
