@@ -6,6 +6,7 @@ import { ToastAndroid } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
 import { URL } from '../const/const';
+import Toast from 'react-native-toast-message';
 
 
 
@@ -41,7 +42,10 @@ export default function LoginScreen() {
         console.log(trimmedUsername);
 
         if (username === '' || password === '') {
-            ToastAndroid.show('Tên đăng nhập và mật khẩu không được để trống!!', ToastAndroid.SHORT);
+            Toast.show({
+                type: 'error',
+                text1: 'Tên đăng nhập và mật khẩu không được để trống',
+              });
             return; // Ngừng xử lý
         }
 
@@ -83,12 +87,18 @@ export default function LoginScreen() {
                 navigation.navigate('Appnavigator');
             } else if (res.status === 401) {
                 // Đăng nhập thất bại
-                ToastAndroid.show('Tên đăng nhập hoặc mật khẩu không đúng', ToastAndroid.SHORT);
+                Toast.show({
+                    type: 'error',
+                    text1: 'Tên đăng nhập hoặc mật khẩu không đúng',
+                  });
             }
         })
         .catch((e) => {
             console.error(e);
-            ToastAndroid.show('Lỗi kết nối', ToastAndroid.SHORT);
+            Toast.show({
+                type: 'error',
+                text1: 'Lỗi kết nối',
+              });
         });
     };
 
