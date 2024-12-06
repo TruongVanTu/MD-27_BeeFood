@@ -18,42 +18,52 @@ export default function ChangePassword() {
     const navigation = useNavigation();
 
     const handleChangePassword = async () => {
-        if (newPassword !== confirmNewPassword) {
-            return Alert.alert('Lỗi', 'Mật khẩu mới và xác nhận mật khẩu không khớp.');
+         // Kiểm tra nếu các trường bị trống
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+        return Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ thông tin.');
+    }
+
+    // Kiểm tra nếu mật khẩu mới và xác nhận mật khẩu không khớp
+    if (newPassword !== confirmNewPassword) {
+        return Alert.alert('Lỗi', 'Mật khẩu mới và xác nhận mật khẩu không khớp.');
+    }
+
+    try {
+        const token = await AsyncStorage.getItem('token');
+        const userId = await AsyncStorage.getItem('_id');
+
+        const response = await fetch(URL + `api/users/update/${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                currentPassword,
+                password: newPassword,
+            }),
+        });
+
+        const responseData = await response.json();
+
+        if (response.status === 200) {
+            Alert.alert('Thông báo', 'Đổi mật khẩu thành công');
+            navigation.goBack();
+        } else {
+            Alert.alert('Lỗi', responseData.error || 'Đổi mật khẩu thất bại');
         }
-
-        try {
-            const token = await AsyncStorage.getItem('token');
-            const userId = await AsyncStorage.getItem('_id');
-
-            const response = await fetch(URL + `api/users/update/${userId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    currentPassword,
-                    password: newPassword
-                }),
-            });
-
-            const responseData = await response.json();
-
-            if (response.status === 200) {
-                Alert.alert('Thông báo', 'Đổi mật khẩu thành công');
-                navigation.goBack();
-            } else {
-                Alert.alert('Lỗi', responseData.error || 'Đổi mật khẩu thất bại');
-            }
-        } catch (error) {
-            console.error('Lỗi khi đổi mật khẩu:', error);
-            Alert.alert('Lỗi', 'Đã xảy ra lỗi khi đổi mật khẩu.');
-        }
+    } catch (error) {
+        console.error('Lỗi khi đổi mật khẩu:', error);
+        Alert.alert('Lỗi', 'Đã xảy ra lỗi khi đổi mật khẩu.');
+    }
     };
 
     return (
         <View style={styles.container}>
+             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                <Icon name="arrow-left" size={20} color="#319AB4" />
+                <Text style={styles.backText}>Quay lại</Text>
+            </TouchableOpacity>
             <Text style={styles.title}>Đổi mật khẩu</Text>
 
             {/* Mật khẩu cũ */}
@@ -126,6 +136,11 @@ const styles = StyleSheet.create({
         padding:20,
         justifyContent:'center',
         backgroundColor:'#fff'
+    },
+    backButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 20,
     },
     title: {
         fontSize:24,
