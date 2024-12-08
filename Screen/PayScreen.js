@@ -90,6 +90,17 @@ const PayScreen = ({ route, navigation }) => {
       totalPrice += product.price * product.quantity;
     });
 
+    // Lấy thời gian hiện tại
+    const now = new Date();
+
+    // Chuyển đổi sang múi giờ Việt Nam (UTC+7)
+    const vietnamTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
+
+    // Định dạng thời gian theo yêu cầu (HH:mm:ss DD/MM/YYYY)
+    const formattedTime =
+      `${vietnamTime.getUTCHours().toString().padStart(2, '0')}:${vietnamTime.getUTCMinutes().toString().padStart(2, '0')}:${vietnamTime.getUTCSeconds().toString().padStart(2, '0')} ${vietnamTime.getUTCDate().toString().padStart(2, '0')}/${(vietnamTime.getUTCMonth() + 1).toString().padStart(2, '0')}/${vietnamTime.getUTCFullYear()}`;
+
+
     const orderData = {
       userId: dataUid, // Giả sử 'data' là userId của người dùng hiện tại
       address: address, // Địa chỉ giao hàng
@@ -99,7 +110,7 @@ const PayScreen = ({ route, navigation }) => {
       notes: text, // Ghi chú cho đơn hàng
       // Thêm thông tin sản phẩm nếu cần
       voucherId: IdVoucher,
-      time: new Date().toISOString(),
+      time: formattedTime,
       products: products.map(product => ({
         restaurantId: product.restaurantId,
         productId: product.productId, // Giả sử mỗi sản phẩm có trường 'id'
@@ -253,9 +264,9 @@ const PayScreen = ({ route, navigation }) => {
 
           </View>
           <Text style={styles.addressText}>{address}</Text>
-          <View >
+          {/* <View >
             <CurrentLocationMap />
-          </View>
+          </View> */}
 
           {products.map((product) => (
             <ProductItemOder key={product._id} products={product} />

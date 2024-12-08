@@ -1,37 +1,64 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Dimensions, ActivityIndicator,Text } from 'react-native';
+import { View, StyleSheet, Dimensions, Text } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
-const CurrentLocationMap = () => {
+const CurrentLocationMap = ({ address }) => {
   const [region, setRegion] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
   const mapRef = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
 
   useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        console.error('Permission to access location was denied');
-        return;
+    const fetchLocations = async () => {
+      try {
+        // Request location permissions
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          console.error('Permission to access location was denied');
+          return;
+        }
+
+        // Get user's current location
+        const location = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.High,
+        });
+        setUserLocation({
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        });
+
+        // Use Location.geocodeAsync to convert address to coordinates
+        const locationResults = await Location.geocodeAsync(address);
+        
+        if (locationResults.length > 0) {
+          const { latitude, longitude } = locationResults[0];
+          const newRegion = {
+            latitude,
+            longitude,
+            latitudeDelta: 0.006,
+            longitudeDelta: 0.006,
+          };
+          
+          setRegion(newRegion);
+          mapRef.current?.animateToRegion(newRegion, 5000);
+        } else {
+          // Fallback to user's location if geocoding fails
+          const newRegion = {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            latitudeDelta: 0.006,
+            longitudeDelta: 0.006,
+          };
+          setRegion(newRegion); 
+        }
+      } catch (error) {
+        console.error('Error fetching locations:', error);
       }
-  
-      let location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.High,
-        timeout: 1000, // Chờ tối đa 15 giây
-      });
-      const newRegion = {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: 0.006,
-        longitudeDelta: 0.006,
-      };
-      setRegion(newRegion);
-  
-      mapRef.current?.animateToRegion(newRegion, 1000);
-    })();
-  }, []);
-  
+    };
+
+    fetchLocations();
+  }, [address]);
 
   if (!region) {
     return (
@@ -48,9 +75,17 @@ const CurrentLocationMap = () => {
         style={styles.map}
         initialRegion={region}
         showsUserLocation={true}
-        onMapReady={() => setMapLoaded(true)} // Cập nhật trạng thái khi bản đồ sẵn sàng
+        onMapReady={() => setMapLoaded(true)}
       >
-        {mapLoaded && <Marker coordinate={region} />}
+        {mapLoaded}
+        {mapLoaded && <Marker coordinate={region} pinColor="red" title="Địa chỉ" />}
+        {mapLoaded && userLocation && (
+          <Marker 
+            coordinate={userLocation} 
+            pinColor="blue" 
+            title="Vị trí của bạn"
+          />
+        )}
       </MapView>
     </View>
   );
@@ -58,14 +93,14 @@ const CurrentLocationMap = () => {
 
 const styles = StyleSheet.create({
   container: {
-    height: Dimensions.get('window').height / 3, // Adjust the size as needed
+    height: Dimensions.get('window').height / 3,
     width: '100%',
   },
   map: {
     ...StyleSheet.absoluteFillObject,
   },
   mapPlaceholder: {
-    height: Dimensions.get('window').height / 3, // Chỉnh lại giống kích thước của bản đồ
+    height: Dimensions.get('window').height / 3,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -73,3 +108,4 @@ const styles = StyleSheet.create({
 });
 
 export default CurrentLocationMap;
+
