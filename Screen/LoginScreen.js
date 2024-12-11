@@ -92,6 +92,20 @@ export default function LoginScreen() {
                         text1: 'Tên đăng nhập hoặc mật khẩu không đúng',
                     });
                 }
+                else if (res.status === 403) {
+                    // Tài khoản bị khóa
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Tài khoản của bạn đã bị khóa',
+                    });
+                }
+                else if (res.status === 404) {
+                    // Không tồn tại tài khoản
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Không tồn tại tài khoản',
+                    });
+                }
             })
             .catch((e) => {
                 console.error(e);
@@ -217,7 +231,7 @@ const styles = StyleSheet.create({
     forgotPasswordLink: {
         color: '#319AB4',
         textDecorationLine: 'underline',
-        textAlign: 'center', 
+        textAlign: 'center',
         marginTop: 15
     },
 });
