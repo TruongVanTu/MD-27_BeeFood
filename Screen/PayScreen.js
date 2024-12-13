@@ -29,7 +29,7 @@ const PayScreen = ({ route, navigation }) => {
   // const [address, setAddress] = useState('D29, Phạm Văn Bạch, Cầu Giấy, Hà Nội');
   // Sử dụng trạng thái cho quantity và totalPrice
   const [text, setText] = useState('');
-  const deliveryFee = 35000;
+  const deliveryFee = 0;
   const [discount, setDiscount] = useState(0)
 
   const [IdVoucher, setDataIdVoucher] = useState(null)
