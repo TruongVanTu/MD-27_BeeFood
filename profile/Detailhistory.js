@@ -11,7 +11,7 @@ import Toast from 'react-native-toast-message';
 const Detailhistory = ({ route, navigation }) => {
   const { orderId } = route.params; // Get the orderId passed via navigation
   const [orderDetails, setOrderDetails] = useState(null);
-  const deliveryFee = 35000;
+  const deliveryFee = 0;
   const discount = 0;
   const [showRating, setShowRating] = useState(false);
   const [starRating, setStarRating] = useState(5);
