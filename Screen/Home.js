@@ -293,7 +293,7 @@ const Goiymonan = ({ navigation }) => {
           <Text>Xem tất cả</Text>
         </TouchableOpacity>
       </View>
-      <ScrollView>
+      <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
         {datamonangoiy.map((data, index) => (
           <View key={data._id || index} style={{ backgroundColor: 'white', marginBottom: 10 }}>
             <TouchableOpacity

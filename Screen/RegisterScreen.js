@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { TextInput, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { URL } from '../const/const';
+import Toast from 'react-native-toast-message';
 
 export default function RegisterScreen() {
     const [username, setUsername] = useState('');
@@ -60,7 +61,7 @@ export default function RegisterScreen() {
         }
 
         //mật khẩu
-        if (trimmedPassword =="") {
+        if (trimmedPassword == "") {
             setValidatePass('Mật khẩu không được để trống!');
             return;
         } else {
@@ -90,14 +91,14 @@ export default function RegisterScreen() {
 
         // Tạo dữ liệu
         const registrationData = {
-            "username":trimmedUsername,
-            "phone":trimmedPhone,
-            "password":trimmedPassword,
-            "rePassword":trimmedRepassword
+            "username": trimmedUsername,
+            "phone": trimmedPhone,
+            "password": trimmedPassword,
+            "rePassword": trimmedRepassword
         };
 
         // Gửi yêu cầu POST
-        await fetch(URL+'api/users/register', {
+        await fetch(URL + 'api/users/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -107,81 +108,119 @@ export default function RegisterScreen() {
 
             .then(res => {
                 if (res.status === 200) {
-                    ToastAndroid.show('Đăng ký thành công',ToastAndroid.SHORT)
+                    // Hiển thị thông báo thành công khi đăng ký
+                    Toast.show({
+                        type: 'success', // kiểu thông báo: success, error, info
+                        position: 'top', // vị trí thông báo: top, bottom
+                        text1: 'Đăng ký thành công', // Tiêu đề của thông báo
+                        visibilityTime: 3000, // Thời gian hiển thị thông báo (mili giây)
+                        autoHide: true, // Tự động ẩn thông báo sau thời gian `visibilityTime`
+                        topOffset: 50, // Khoảng cách từ trên xuống (dành cho iOS)
+                    });
                     setUsername("");
                     setPhone("");
                     setPassword("");
                     navigation.navigate('Login');
-                }else if (res.status === 501) {
-                    ToastAndroid.show('Tên tài khoản đã được sử dụng!! ', ToastAndroid.SHORT);
+                } else if (res.status === 501) {
+                    Toast.show({
+                        type: 'error',  // Loại thông báo là lỗi (error)
+                        position: 'top',  // Hiển thị ở trên cùng màn hình
+                        text1: 'Tên tài khoản đã được sử dụng',  // Tiêu đề thông báo
+                        text2: 'Vui lòng chọn một tên tài khoản khác.',  // Nội dung chi tiết
+                        visibilityTime: 3000,  // Thời gian hiển thị thông báo (3000ms = 3 giây)
+                        autoHide: true,  // Tự động ẩn sau thời gian `visibilityTime`
+                        topOffset: 50,  // Khoảng cách từ trên xuống (cho iOS)
+                    });
                 } else if (res.status === 502) {
-                    ToastAndroid.show('Số điện thoại đã được sử dụng!! ', ToastAndroid.SHORT);
+                    Toast.show({
+                        type: 'error',  // Loại thông báo là lỗi (error)
+                        position: 'top',  // Hiển thị ở trên cùng màn hình
+                        text1: 'Số điện thoại đã được sử dụngdụng',  // Tiêu đề thông báo
+                        text2: 'Vui lòng chọn một số điện thoại khác.',  // Nội dung chi tiết
+                        visibilityTime: 3000,  // Thời gian hiển thị thông báo (3000ms = 3 giây)
+                        autoHide: true,  // Tự động ẩn sau thời gian `visibilityTime`
+                        topOffset: 50,  // Khoảng cách từ trên xuống (cho iOS)
+                    });
                 } else {
-                    ToastAndroid.show('Đăng kí thất bại', ToastAndroid.SHORT);
+                    Toast.show({
+                        type: 'error',  // Loại thông báo là lỗi (error)
+                        position: 'top',  // Hiển thị ở trêntrên cùng màn hình
+                        text1: 'Đăng ký thất bạibại',  // Tiêu đề thông báo
+                        visibilityTime: 3000,  // Thời gian hiển thị thông báo (3000ms = 3 giây)
+                        autoHide: true,  // Tự động ẩn sau thời gian `visibilityTime`
+                        topOffset: 50,  // Khoảng cách từ trên xuống (cho iOS)
+                    });
                 }
             })
             .catch(e => {
                 console.error(e);
-                ToastAndroid.show('Đăng kí thất bại',ToastAndroid.SHORT)
+                Toast.show({
+                    type: 'error',  // Loại thông báo là lỗi (error)
+                    position: 'top',  // Hiển thị ở trêntrên cùng màn hình
+                    text1: 'Đăng ký thất bạibại',  // Tiêu đề thông báo
+                    visibilityTime: 3000,  // Thời gian hiển thị thông báo (3000ms = 3 giây)
+                    autoHide: true,  // Tự động ẩn sau thời gian `visibilityTime`
+                    topOffset: 50,  // Khoảng cách từ trên xuống (cho iOS)
+                });
             });
 
     }
-    
+
     return (
         <View style={styles.container}>
             <Image style={styles.logo} source={require('./../Image/Logo_BeeFood.png')} />
             <TextInput
-                 label="Tên đăng nhập"
-                 value={username}
-                 onChangeText={(text) => setUsername(text)}
-                 style={styles.input}
-                 theme={{ colors: { primary: '#319AB4' } }}
+                label="Tên đăng nhập"
+                value={username}
+                onChangeText={(text) => setUsername(text)}
+                style={styles.input}
+                theme={{ colors: { primary: '#319AB4' } }}
             />
             {validateUser !== '' && <Text style={styles.errorText}>{validateUser}</Text>}
             <TextInput
-                 label="Số điện thoại"
-                 value={phone}
-                 onChangeText={(text) => setPhone(text)}
-                 style={styles.input}
-                 theme={{ colors: { primary: '#319AB4' } }}
+                label="Số điện thoại"
+                value={phone}
+                onChangeText={(text) => setPhone(text)}
+                style={styles.input}
+                theme={{ colors: { primary: '#319AB4' } }}
             />
             {validatePhone !== '' && <Text style={styles.errorText}>{validatePhone}</Text>}
 
             <View style={styles.passwordContainer}>
                 <TextInput
-                     label="Mật khẩu"
-                     value={password}
-                     secureTextEntry={!showPassword}
-                     onChangeText={(text) => setPassword(text)}
-                     style={styles.passwordInputField}
-                     theme={{ colors: { primary: '#319AB4' } }}
+                    label="Mật khẩu"
+                    value={password}
+                    secureTextEntry={!showPassword}
+                    onChangeText={(text) => setPassword(text)}
+                    style={styles.passwordInputField}
+                    theme={{ colors: { primary: '#319AB4' } }}
                 />
                 <Icon
-                     name={showPassword ? 'eye-slash' : 'eye'}
-                     size={20}
-                     color="gray"
-                     onPress={() => setShowPassword(!showPassword)}
-                     style={styles.passwordIcon}
+                    name={showPassword ? 'eye-slash' : 'eye'}
+                    size={20}
+                    color="gray"
+                    onPress={() => setShowPassword(!showPassword)}
+                    style={styles.passwordIcon}
                 />
 
             </View>
             {validatePass !== '' && <Text style={styles.errorText}>{validatePass}</Text>}
             <View style={styles.passwordContainer}>
                 <TextInput
-                      label="Nhập lại mật khẩu"
-                      value={rePassword}
-                      secureTextEntry={!showRePassword}
-                      onChangeText={(text) => setRePassword(text)}
-                      style={styles.passwordInputField}
-                      theme={{ colors: { primary: '#319AB4' } }}
+                    label="Nhập lại mật khẩu"
+                    value={rePassword}
+                    secureTextEntry={!showRePassword}
+                    onChangeText={(text) => setRePassword(text)}
+                    style={styles.passwordInputField}
+                    theme={{ colors: { primary: '#319AB4' } }}
                 />
 
                 <Icon
-                     name={showRePassword ? 'eye-slash' : 'eye'}
-                     size={20}
-                     color="gray"
-                     onPress={() => setShowRePassword(!showRePassword)}
-                     style={styles.passwordIcon}
+                    name={showRePassword ? 'eye-slash' : 'eye'}
+                    size={20}
+                    color="gray"
+                    onPress={() => setShowRePassword(!showRePassword)}
+                    style={styles.passwordIcon}
                 />
             </View>
             {validaRepass !== '' && <Text style={styles.errorText}>{validaRepass}</Text>}
@@ -192,9 +231,9 @@ export default function RegisterScreen() {
             >
                 ĐĂNG KÝ
             </Button>
-                    <Text style={styles.backText} >
-            Đã có tài khoản? <Text style={styles.backLink } onPress={() => navigation.navigate('Login')}>Quay lại đăng nhập</Text>
-        </Text>
+            <Text style={styles.backText} >
+                Đã có tài khoản? <Text style={styles.backLink} onPress={() => navigation.navigate('Login')}>Quay lại đăng nhập</Text>
+            </Text>
         </View>
     );
 }
@@ -245,15 +284,15 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     backText: {
-    marginTop: 20,
-    fontSize: 15,
-    color: '#777',
-    textAlign: 'center',
-},
-backLink: {
-    color: '#319AB4', // Màu nhấn mạnh
-    fontWeight: 'bold',
-    textDecorationLine: 'underline',
-},
+        marginTop: 20,
+        fontSize: 15,
+        color: '#777',
+        textAlign: 'center',
+    },
+    backLink: {
+        color: '#319AB4', // Màu nhấn mạnh
+        fontWeight: 'bold',
+        textDecorationLine: 'underline',
+    },
 
 });

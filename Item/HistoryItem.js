@@ -82,7 +82,15 @@ const HistoryItem = ({ item, navigation, isCancel, setIsCancel }) => {
 
               if (response.ok) {
                 // Cập nhật trạng thái đơn hàng thành công
-                ToastAndroid.show('Hủy đơn hàng thành công', ToastAndroid.SHORT);
+                Toast.show({
+                  type: 'success',
+                  position: 'top',  // Vị trí hiển thị là trên cùng màn hình
+                  text1: 'Hủy đơn hàng thành công',
+                  text2: 'Đơn hàng của bạn đã được hủy thành công.',
+                  visibilityTime: 2000,  // Thời gian hiển thị
+                  autoHide: true,  // Tự động ẩn sau khi hết thời gian
+                  topOffset: 50,  // Khoảng cách từ trên xuống (mặc định là 50)
+                });
 
 
                 console.log('Cập nhật trạng thái đơn hàng thành công');

@@ -592,6 +592,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  emptyCartContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 40, // Điều chỉnh khoảng cách từ trên xuống
+    backgroundColor: '#f8f9fa', // Nền sáng nhẹ
+    paddingVertical: 20,
+    paddingHorizontal: 30,
+    borderRadius: 15,
+    marginHorizontal: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  emptyCartText: {
+    fontSize: 18, // Kích thước chữ phù hợp hơn với không gian
+    fontWeight: '500', // Độ đậm vừa phải
+    color: '#495057', // Màu chữ dễ nhìn
+    textAlign: 'center',
+    marginTop: 10,
+    lineHeight: 24, // Giảm khoảng cách giữa các dòng để văn bản gọn gàng
+    letterSpacing: 0.8,
+  },
 });
 
 export default OrderScreen;
