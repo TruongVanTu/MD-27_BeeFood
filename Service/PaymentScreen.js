@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Dimensions,
+  Alert,
+  ScrollView,
 } from 'react-native';
 import CryptoJS from 'crypto-js';
 import * as Network from 'expo-network';
@@ -17,28 +19,40 @@ const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const PaymentScreen = ({ route, navigation }) => {
-  const { products } = route.params;
-  const { orderData } = route.params;
+  const { products, orderData } = route.params;
   const totalPrice = orderData.toltalprice;
   const [paymentUrl, setPaymentUrl] = useState('');
   const [encodedDateTime, setEncodedDateTime] = useState('');
   const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);
   const [ipAddress, setIpAddress] = useState('');
+  const [transactionDetails, setTransactionDetails] = useState(null);
   const vnp_TmnCode = '25QCPEV0';
   const vnp_HashSecret = '7QMLFPSU05CLBIUK168H1E8MCKUUA59R';
 
+  const formatPayDate = (payDate) => {
+    const year = payDate.substring(0, 4);
+    const month = payDate.substring(4, 6);
+    const day = payDate.substring(6, 8);
+    const hour = payDate.substring(8, 10);
+    const minute = payDate.substring(10, 12);
+    const second = payDate.substring(12, 14);
+    return `${day}/${month}/${year} ${hour}:${minute}:${second}`;
+  };
 
-
-  const sendOrderToServer = async () => {
-    console.log('data products2222', products);
+  const sendOrderToServer = async (transactionDetails) => {
+    console.log('Data products:', products);
+    console.log('Transaction Details:', transactionDetails);
 
     try {
-      const response = await fetch(URL + 'api/history/create', {
+      const response = await fetch(`${URL}api/history/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(orderData),
+        body: JSON.stringify({
+          ...orderData,
+          transactionDetails,
+        }),
       });
 
       const responseData = await response.json();
@@ -48,17 +62,15 @@ const PaymentScreen = ({ route, navigation }) => {
 
       console.log('Đơn hàng đã được tạo:', responseData);
 
-      // Đặt timeout để hiển thị modal sau 3 giây
       setTimeout(() => {
         setSuccessModalVisible(true);
-      }, 1000);
+      }, 2000);
     } catch (error) {
       console.error('Error:', error);
+      Alert.alert('Lỗi', 'Có lỗi xảy ra khi tạo đơn hàng. Vui lòng thử lại.');
     }
   };
 
-
-  // Hàm lấy thời gian bắt đầu
   function getCurrentDateTime() {
     const now = new Date();
     const year = now.getFullYear();
@@ -69,15 +81,11 @@ const PaymentScreen = ({ route, navigation }) => {
     const seconds = now.getSeconds().toString().padStart(2, '0');
     return `${year}${month}${day}${hours}${minutes}${seconds}`;
   }
-  //// Hàm lấy thời gian kết thúc
-  const getExpireDateTime = (offsetMinutes = 30) => {
-    // Tạo ra một đối tượng ngày mới với thời gian hiện tại
-    const now = new Date();
 
-    // Thêm offset (ví dụ: 30 phút) vào thời gian hiện tại
+  const getExpireDateTime = (offsetMinutes = 30) => {
+    const now = new Date();
     now.setMinutes(now.getMinutes() + offsetMinutes);
 
-    // Định dạng thời gian theo yêu cầu: yyyyMMddHHmmss
     const year = now.getFullYear();
     const month = (now.getMonth() + 1).toString().padStart(2, '0');
     const day = now.getDate().toString().padStart(2, '0');
@@ -88,28 +96,27 @@ const PaymentScreen = ({ route, navigation }) => {
     return `${year}${month}${day}${hours}${minutes}${seconds}`;
   };
 
-
   const generateRandomNumberString = (length) => {
     let randomString = '';
     while (randomString.length < length) {
-      // Tạo một số ngẫu nhiên và loại bỏ phần '0.' ở đầu
       randomString += Math.random().toString().slice(2);
     }
-    // Cắt chuỗi để có độ dài mong muốn và trả về
     return randomString.substr(0, length);
   };
-  ///
+
   const generateEncodedDateTime = () => {
-    // Current date and time
     const currentDateTime = new Date();
+    const formattedDateTime = `${currentDateTime.getFullYear()}-${(currentDateTime.getMonth() + 1)
+      .toString()
+      .padStart(2, '0')}-${currentDateTime.getDate().toString().padStart(2, '0')} ${currentDateTime
+      .getHours()
+      .toString()
+      .padStart(2, '0')}:${currentDateTime.getMinutes().toString().padStart(2, '0')}:${currentDateTime
+      .getSeconds()
+      .toString()
+      .padStart(2, '0')}`;
 
-    // Format the date and time in the desired format
-    const formattedDateTime = `${currentDateTime.getFullYear()}-${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}-${currentDateTime.getDate().toString().padStart(2, '0')} ${currentDateTime.getHours().toString().padStart(2, '0')}:${currentDateTime.getMinutes().toString().padStart(2, '0')}:${currentDateTime.getSeconds().toString().padStart(2, '0')}`;
-
-    // Construct the original string with the current date and time
     const originalString = `Thanh toan don hang thoi gian: ${formattedDateTime}`;
-
-    // URL encode the string, replacing spaces with plus signs
     const encodedString = encodeURIComponent(originalString).replace(/%20/g, '+');
 
     console.log("Encoded DateTime: " + encodedString);
@@ -117,9 +124,7 @@ const PaymentScreen = ({ route, navigation }) => {
     return encodedString;
   };
 
-
   useEffect(() => {
-    // Hàm lấy địa chỉ IP và cập nhật trạng thái
     const fetchIpAddress = async () => {
       try {
         const ip = await Network.getIpAddressAsync();
@@ -131,10 +136,9 @@ const PaymentScreen = ({ route, navigation }) => {
 
     fetchIpAddress();
   }, []);
+
   useEffect(() => {
     const createPaymentUrl = () => {
-      // Tạo các tham số cơ bản cho giao dịch
-      // Các thông số cần thiết cho URL
       const vnp_Params = {
         vnp_Amount: totalPrice * 100,
         vnp_BankCode: 'NCB',
@@ -149,53 +153,63 @@ const PaymentScreen = ({ route, navigation }) => {
         vnp_ReturnUrl: 'https%3A%2F%2Fsandbox.vnpayment.vn%2Ftryitnow%2FHome%2FVnPayReturn',
         vnp_TmnCode: vnp_TmnCode,
         vnp_TxnRef: generateRandomNumberString(6),
-        vnp_Version: '2.1.0'
-        // vnp_SecureHash sẽ được thêm sau khi tạo chuỗi băm
+        vnp_Version: '2.1.0',
       };
 
-      // Sắp xếp các tham số theo thứ tự alphabet
       const sortedKeys = Object.keys(vnp_Params).sort();
       let signData = sortedKeys.map(key => `${key}=${vnp_Params[key]}`).join('&');
 
-      // Tạo chuỗi băm
       const secureHash = CryptoJS.HmacSHA512(signData, vnp_HashSecret).toString(CryptoJS.enc.Hex);
       const paymentUrl = `https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?${signData}&vnp_SecureHash=${secureHash}`;
 
       return paymentUrl;
     };
 
-    const url = createPaymentUrl();
-    console.log("giá", totalPrice);
-    console.log("giá 222", orderData);
-    console.log(url);
-
-    // console.log(products);
-    setPaymentUrl(url);
+    if (ipAddress) {
+      const url = createPaymentUrl();
+      console.log("Giá:", totalPrice);
+      console.log("Order Data:", orderData);
+      console.log("Payment URL:", url);
+      setPaymentUrl(url);
+    }
   }, [ipAddress, totalPrice, products]);
 
-  // ------------------- Lắng nghe điều hướng WebView -------------------
+  const getQueryParams = (url) => {
+    const params = {};
+    const queryStart = url.indexOf('?') + 1;
+    const queryEnd = url.indexOf('#') > -1 ? url.indexOf('#') : url.length;
+    const query = url.slice(queryStart, queryEnd);
+    const vars = query.split('&');
+    vars.forEach((v) => {
+      const pair = v.split('=');
+      if (pair.length === 2) {
+        params[pair[0]] = decodeURIComponent(pair[1]);
+      }
+    });
+    return params;
+  };
+
   const handleWebViewNavigationStateChange = (navState) => {
     const { url } = navState;
     console.log('Nav state =>', url);
 
-    // Khi VNPay trả về URL:
-    // "https://sandbox.vnpayment.vn/tryitnow/Home/VnPayReturn?..."
     if (url.startsWith('https://sandbox.vnpayment.vn/tryitnow/Home/VnPayReturn')) {
-      // Parse query param `vnp_ResponseCode`
-      const responseMatch = url.match(/vnp_ResponseCode=(\d+)/);
-      if (responseMatch && responseMatch[1] === '00') {
-        // Thanh toán thành công => GỌI API TẠO ĐƠN HÀNG
-        sendOrderToServer();
+      const queryParams = getQueryParams(url);
+      console.log('Transaction Details:', queryParams);
+
+      const responseCode = queryParams.vnp_ResponseCode;
+
+      if (responseCode === '00') {
+        setTransactionDetails(queryParams);
+        sendOrderToServer(queryParams);
       } else {
         console.log('Thanh toán thất bại hoặc bị hủy');
+        Alert.alert('Thanh toán thất bại', 'Giao dịch của bạn không thành công. Vui lòng thử lại.');
       }
 
-      // Ẩn WebView (nếu muốn)
       setPaymentUrl('');
     }
   };
-
-
 
   const goBack = () => {
     navigation.goBack();
@@ -203,38 +217,51 @@ const PaymentScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Nút “Thanh toán” giờ không gọi API -> Xoá hoặc ẩn nếu muốn */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={goBack} style={styles.goBackButton}>
           <Text style={styles.goBackButtonText}>Huỷ</Text>
         </TouchableOpacity>
       </View>
 
-      {/* SuccessModal khi đã gọi API đặt hàng xong */}
       <SuccessModal
         isVisible={isSuccessModalVisible}
+        setSuccessModalVisible={setSuccessModalVisible}
         navigation={navigation}
         products={products}
+        transactionDetails={transactionDetails}
       />
 
-      <View style={styles.paymentInfoContainer}>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {paymentUrl ? (
           <WebView
             source={{ uri: paymentUrl }}
             style={styles.webView}
             onNavigationStateChange={handleWebViewNavigationStateChange}
           />
+        ) : transactionDetails ? (
+          <View style={styles.transactionInfo}>
+            <Text style={styles.transactionTitle}>Chi tiết giao dịch</Text>
+            <View style={styles.transactionRow}>
+              <Text style={styles.transactionLabel}>Mã giao dịch:</Text>
+              <Text style={styles.transactionValue}>{transactionDetails.vnp_TxnRef}</Text>
+            </View>
+            <View style={styles.transactionRow}>
+              <Text style={styles.transactionLabel}>Số tiền:</Text>
+              <Text style={styles.transactionValue}>{(transactionDetails.vnp_Amount / 100).toLocaleString()} VND</Text>
+            </View>
+            <View style={styles.transactionRow}>
+              <Text style={styles.transactionLabel}>Ngày thanh toán:</Text>
+              <Text style={styles.transactionValue}>{formatPayDate(transactionDetails.vnp_PayDate)}</Text>
+            </View>
+            <View style={styles.transactionRow}>
+              <Text style={styles.transactionLabel}>Phương thức thanh toán:</Text>
+              <Text style={styles.transactionValue}>{transactionDetails.vnp_BankCode}</Text>
+            </View>
+          </View>
         ) : (
-          <Text style={{
-            marginTop: 30,
-            fontSize: 20,
-            fontWeight: 'bold',
-            color: '#28a745',
-            textAlign: 'center',
-            paddingHorizontal: 20,
-          }} >Thanh Toán Thành Công</Text>
+          <Text style={styles.successText}>Đang tạo URL...</Text>
         )}
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -242,7 +269,7 @@ const PaymentScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
   },
   buttonContainer: {
     marginTop: 30,
@@ -250,63 +277,80 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
     width: '100%',
-    borderBottomWidth: 1, // Thêm đường line ở cuối
-    borderBottomColor: '#ddd', // Màu của đường line
-    backgroundColor: 'transparent', // Loại bỏ màu nền
-
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    backgroundColor: 'transparent',
   },
   goBackButton: {
     backgroundColor: 'red',
     padding: 10,
     borderRadius: 5,
-    margin: 10
-  },
-  confirmButton: {
-    padding: 10,
-    backgroundColor: '#007bff',
-    borderRadius: 5,
-  },
-  confirmButtonText: {
-    fontWeight: 'bold', // Đặt độ đậm cho chữ
-    fontSize: 16,       // Đặt kích thước cho chữ
-    color: 'white',
-    textAlign: 'center',
+    margin: 10,
   },
   goBackButtonText: {
-    fontWeight: 'bold', // Đặt độ đậm cho chữ
-    fontSize: 16,       // Đặt kích thước cho chữ
-    color: 'white',     // Màu chữ, bạn có thể thay đổi nếu cần
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: 'white',
     textAlign: 'center',
   },
-
-  paymentInfoContainer: {
+  scrollViewContent: {
+    flexGrow: 1,
     alignItems: 'center',
-    padding: 10
+    paddingVertical: 20,
   },
-  title: {
-    fontSize: 22,
+  successText: {
+    marginTop: 30,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#28a745',
+    textAlign: 'center',
+    paddingHorizontal: 20,
+  },
+  transactionInfo: {
+    marginTop: 20,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    width: '90%',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  transactionTitle: {
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: 'white',
-  },
-  instructions: {
-    fontSize: 16,
     textAlign: 'center',
-    marginBottom: 20,
+    color: '#333',
+  },
+  transactionRow: {
+    flexDirection: 'column',
+    marginBottom: 15,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  transactionLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666',
+    marginBottom: 5,
+  },
+  transactionValue: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333',
   },
   webView: {
     width: screenWidth,
-    height: screenHeight * 0.8, // You can adjust the height as needed
-  },
-  confirmButton: {
-    padding: 10,
-    backgroundColor: '#007bff',
-    borderRadius: 5,
-  },
-  confirmButtonText: {
-    color: 'white',
-    textAlign: 'center',
+    height: screenHeight * 0.8,
   },
 });
 
 export default PaymentScreen;
+
