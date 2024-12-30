@@ -17,7 +17,7 @@ const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const PaymentScreen = ({ route, navigation }) => {
-  const {  products } = route.params;
+  const { products } = route.params;
   const { orderData } = route.params;
   const totalPrice = orderData.toltalprice;
   const [paymentUrl, setPaymentUrl] = useState('');
@@ -26,39 +26,39 @@ const PaymentScreen = ({ route, navigation }) => {
   const [ipAddress, setIpAddress] = useState('');
   const vnp_TmnCode = '25QCPEV0';
   const vnp_HashSecret = '7QMLFPSU05CLBIUK168H1E8MCKUUA59R';
- 
+
 
 
   const sendOrderToServer = async () => {
-      console.log('data products2222' , products);
+    console.log('data products2222', products);
 
     try {
-        const response = await fetch(URL + 'api/history/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(orderData),
-        });
+      const response = await fetch(URL + 'api/history/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
 
-        const responseData = await response.json();
-        if (!response.ok) {
-            throw new Error(responseData.msg || 'Có lỗi xảy ra khi gửi đơn hàng.');
-        }
+      const responseData = await response.json();
+      if (!response.ok) {
+        throw new Error(responseData.msg || 'Có lỗi xảy ra khi gửi đơn hàng.');
+      }
 
-        console.log('Đơn hàng đã được tạo:', responseData);
+      console.log('Đơn hàng đã được tạo:', responseData);
 
-        // Đặt timeout để hiển thị modal sau 3 giây
-        setTimeout(() => {
-            setSuccessModalVisible(true);
-        }, 1500);
+      // Đặt timeout để hiển thị modal sau 3 giây
+      setTimeout(() => {
+        setSuccessModalVisible(true);
+      }, 1000);
     } catch (error) {
-        console.error('Error:', error);
+      console.error('Error:', error);
     }
-};
+  };
 
 
-   // Hàm lấy thời gian bắt đầu
+  // Hàm lấy thời gian bắt đầu
   function getCurrentDateTime() {
     const now = new Date();
     const year = now.getFullYear();
@@ -73,10 +73,10 @@ const PaymentScreen = ({ route, navigation }) => {
   const getExpireDateTime = (offsetMinutes = 30) => {
     // Tạo ra một đối tượng ngày mới với thời gian hiện tại
     const now = new Date();
-  
+
     // Thêm offset (ví dụ: 30 phút) vào thời gian hiện tại
     now.setMinutes(now.getMinutes() + offsetMinutes);
-  
+
     // Định dạng thời gian theo yêu cầu: yyyyMMddHHmmss
     const year = now.getFullYear();
     const month = (now.getMonth() + 1).toString().padStart(2, '0');
@@ -84,7 +84,7 @@ const PaymentScreen = ({ route, navigation }) => {
     const hours = now.getHours().toString().padStart(2, '0');
     const minutes = now.getMinutes().toString().padStart(2, '0');
     const seconds = now.getSeconds().toString().padStart(2, '0');
-  
+
     return `${year}${month}${day}${hours}${minutes}${seconds}`;
   };
 
@@ -98,24 +98,24 @@ const PaymentScreen = ({ route, navigation }) => {
     // Cắt chuỗi để có độ dài mong muốn và trả về
     return randomString.substr(0, length);
   };
-///
-const generateEncodedDateTime = () => {
-  // Current date and time
-  const currentDateTime = new Date();
+  ///
+  const generateEncodedDateTime = () => {
+    // Current date and time
+    const currentDateTime = new Date();
 
-  // Format the date and time in the desired format
-  const formattedDateTime = `${currentDateTime.getFullYear()}-${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}-${currentDateTime.getDate().toString().padStart(2, '0')} ${currentDateTime.getHours().toString().padStart(2, '0')}:${currentDateTime.getMinutes().toString().padStart(2, '0')}:${currentDateTime.getSeconds().toString().padStart(2, '0')}`;
+    // Format the date and time in the desired format
+    const formattedDateTime = `${currentDateTime.getFullYear()}-${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}-${currentDateTime.getDate().toString().padStart(2, '0')} ${currentDateTime.getHours().toString().padStart(2, '0')}:${currentDateTime.getMinutes().toString().padStart(2, '0')}:${currentDateTime.getSeconds().toString().padStart(2, '0')}`;
 
-  // Construct the original string with the current date and time
-  const originalString = `Thanh toan don hang thoi gian: ${formattedDateTime}`;
+    // Construct the original string with the current date and time
+    const originalString = `Thanh toan don hang thoi gian: ${formattedDateTime}`;
 
-  // URL encode the string, replacing spaces with plus signs
-  const encodedString = encodeURIComponent(originalString).replace(/%20/g, '+');
+    // URL encode the string, replacing spaces with plus signs
+    const encodedString = encodeURIComponent(originalString).replace(/%20/g, '+');
 
-  console.log("Encoded DateTime: " + encodedString);
-  setEncodedDateTime(encodedString);
-  return encodedString;
-};
+    console.log("Encoded DateTime: " + encodedString);
+    setEncodedDateTime(encodedString);
+    return encodedString;
+  };
 
 
   useEffect(() => {
@@ -128,30 +128,30 @@ const generateEncodedDateTime = () => {
         console.error(e);
       }
     };
-  
+
     fetchIpAddress();
   }, []);
-   useEffect(() => {
+  useEffect(() => {
     const createPaymentUrl = () => {
       // Tạo các tham số cơ bản cho giao dịch
-       // Các thông số cần thiết cho URL
-  const vnp_Params = {
-    vnp_Amount: totalPrice*100,
-    vnp_BankCode: 'VNBANK',
-    vnp_Command: 'pay',
-    vnp_CreateDate: getCurrentDateTime(),
-    vnp_CurrCode: 'VND',
-    vnp_ExpireDate: getExpireDateTime(),
-    vnp_IpAddr: ipAddress,
-    vnp_Locale: 'vn',
-    vnp_OrderInfo: generateEncodedDateTime(),
-    vnp_OrderType: 'food',
-    vnp_ReturnUrl: 'https%3A%2F%2Fsandbox.vnpayment.vn%2Ftryitnow%2FHome%2FVnPayReturn',
-    vnp_TmnCode: vnp_TmnCode,
-    vnp_TxnRef: generateRandomNumberString(6),
-    vnp_Version: '2.1.0'
-    // vnp_SecureHash sẽ được thêm sau khi tạo chuỗi băm
-  };
+      // Các thông số cần thiết cho URL
+      const vnp_Params = {
+        vnp_Amount: totalPrice * 100,
+        vnp_BankCode: 'NCB',
+        vnp_Command: 'pay',
+        vnp_CreateDate: getCurrentDateTime(),
+        vnp_CurrCode: 'VND',
+        vnp_ExpireDate: getExpireDateTime(),
+        vnp_IpAddr: ipAddress,
+        vnp_Locale: 'vn',
+        vnp_OrderInfo: generateEncodedDateTime(),
+        vnp_OrderType: 'food',
+        vnp_ReturnUrl: 'https%3A%2F%2Fsandbox.vnpayment.vn%2Ftryitnow%2FHome%2FVnPayReturn',
+        vnp_TmnCode: vnp_TmnCode,
+        vnp_TxnRef: generateRandomNumberString(6),
+        vnp_Version: '2.1.0'
+        // vnp_SecureHash sẽ được thêm sau khi tạo chuỗi băm
+      };
 
       // Sắp xếp các tham số theo thứ tự alphabet
       const sortedKeys = Object.keys(vnp_Params).sort();
@@ -165,15 +165,37 @@ const generateEncodedDateTime = () => {
     };
 
     const url = createPaymentUrl();
-    console.log("giá" ,totalPrice);
-    console.log("giá 222" ,orderData);
+    console.log("giá", totalPrice);
+    console.log("giá 222", orderData);
     console.log(url);
-    
+
     // console.log(products);
     setPaymentUrl(url);
-  }, [ipAddress,totalPrice, products]);
+  }, [ipAddress, totalPrice, products]);
 
-  
+  // ------------------- Lắng nghe điều hướng WebView -------------------
+  const handleWebViewNavigationStateChange = (navState) => {
+    const { url } = navState;
+    console.log('Nav state =>', url);
+
+    // Khi VNPay trả về URL:
+    // "https://sandbox.vnpayment.vn/tryitnow/Home/VnPayReturn?..."
+    if (url.startsWith('https://sandbox.vnpayment.vn/tryitnow/Home/VnPayReturn')) {
+      // Parse query param `vnp_ResponseCode`
+      const responseMatch = url.match(/vnp_ResponseCode=(\d+)/);
+      if (responseMatch && responseMatch[1] === '00') {
+        // Thanh toán thành công => GỌI API TẠO ĐƠN HÀNG
+        sendOrderToServer();
+      } else {
+        console.log('Thanh toán thất bại hoặc bị hủy');
+      }
+
+      // Ẩn WebView (nếu muốn)
+      setPaymentUrl('');
+    }
+  };
+
+
 
   const goBack = () => {
     navigation.goBack();
@@ -181,29 +203,36 @@ const generateEncodedDateTime = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Nút “Thanh toán” giờ không gọi API -> Xoá hoặc ẩn nếu muốn */}
       <View style={styles.buttonContainer}>
-        
-      <TouchableOpacity onPress={sendOrderToServer} style={styles.confirmButton}>
-        <Text style={styles.confirmButtonText}>Xác nhận thanh toán</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={goBack} style={styles.goBackButton}>
-        <Text style={styles.goBackButtonText}>Huỷ</Text>
-      </TouchableOpacity>
-
+        <TouchableOpacity onPress={goBack} style={styles.goBackButton}>
+          <Text style={styles.goBackButtonText}>Huỷ</Text>
+        </TouchableOpacity>
       </View>
+
+      {/* SuccessModal khi đã gọi API đặt hàng xong */}
       <SuccessModal
-            isVisible={isSuccessModalVisible}
-            navigation={navigation}
-            products={products}
-          />
+        isVisible={isSuccessModalVisible}
+        navigation={navigation}
+        products={products}
+      />
+
       <View style={styles.paymentInfoContainer}>
         {paymentUrl ? (
           <WebView
             source={{ uri: paymentUrl }}
             style={styles.webView}
+            onNavigationStateChange={handleWebViewNavigationStateChange}
           />
         ) : (
-          <Text>Đang tạo URL thanh toán...</Text>
+          <Text style={{
+            marginTop: 30,
+            fontSize: 20,
+            fontWeight: 'bold',
+            color: '#28a745',
+            textAlign: 'center',
+            paddingHorizontal: 20,
+          }} >Thanh Toán Thành Công</Text>
         )}
       </View>
     </SafeAreaView>
@@ -220,17 +249,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 10,
-    width:'100%',
+    width: '100%',
     borderBottomWidth: 1, // Thêm đường line ở cuối
     borderBottomColor: '#ddd', // Màu của đường line
     backgroundColor: 'transparent', // Loại bỏ màu nền
-    
+
   },
   goBackButton: {
     backgroundColor: 'red',
     padding: 10,
     borderRadius: 5,
-    margin:10
+    margin: 10
   },
   confirmButton: {
     padding: 10,
@@ -249,7 +278,7 @@ const styles = StyleSheet.create({
     color: 'white',     // Màu chữ, bạn có thể thay đổi nếu cần
     textAlign: 'center',
   },
-  
+
   paymentInfoContainer: {
     alignItems: 'center',
     padding: 10
@@ -273,11 +302,11 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#007bff',
     borderRadius: 5,
-},
-confirmButtonText: {
+  },
+  confirmButtonText: {
     color: 'white',
     textAlign: 'center',
-},
+  },
 });
 
 export default PaymentScreen;
