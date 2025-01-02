@@ -64,7 +64,7 @@ const PaymentScreen = ({ route, navigation }) => {
 
       setTimeout(() => {
         setSuccessModalVisible(true);
-      }, 2000);
+      }, 4000);
     } catch (error) {
       console.error('Error:', error);
       Alert.alert('Lỗi', 'Có lỗi xảy ra khi tạo đơn hàng. Vui lòng thử lại.');

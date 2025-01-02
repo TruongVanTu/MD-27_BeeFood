@@ -1,13 +1,23 @@
 import React, { useState } from 'react';
-import { Modal, View, TextInput, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Modal, View, TextInput, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const EditAddressModal = ({ isVisible, setIsVisible, onConfirmAddress }) => {
   const [newAddress, setNewAddress] = useState('');
 
   const handleConfirm = () => {
+    if (newAddress.trim() === '') {
+      Alert.alert('Lỗi', 'Vui lòng nhập địa chỉ mới.');
+      return;
+    }
     onConfirmAddress(newAddress);
+    setNewAddress(''); // Reset input sau khi xác nhận
     setIsVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsVisible(false);
+    setNewAddress(''); // Reset input khi hủy
   };
 
   return (
@@ -15,7 +25,7 @@ const EditAddressModal = ({ isVisible, setIsVisible, onConfirmAddress }) => {
       animationType="slide"
       transparent={true}
       visible={isVisible}
-      onRequestClose={() => setIsVisible(false)}
+      onRequestClose={handleCancel}
     >
       <View style={styles.modalOverlay}>
         <View style={styles.modalView}>
@@ -23,7 +33,7 @@ const EditAddressModal = ({ isVisible, setIsVisible, onConfirmAddress }) => {
           <View style={styles.infoContainer}>
             <Icon name="info-circle" size={24} color="#3498db" />
             <Text style={styles.infoText}>
-              Vui lòng nhập địa chỉ của bạn !
+              Vui lòng nhập địa chỉ của bạn!
             </Text>
           </View>
           <TextInput
@@ -37,7 +47,7 @@ const EditAddressModal = ({ isVisible, setIsVisible, onConfirmAddress }) => {
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={[styles.touchableButton, styles.cancelButton]}
-              onPress={() => setIsVisible(false)}
+              onPress={handleCancel}
             >
               <Text style={styles.buttonText}>Huỷ</Text>
             </TouchableOpacity>
@@ -132,4 +142,3 @@ const styles = StyleSheet.create({
 });
 
 export default EditAddressModal;
-
