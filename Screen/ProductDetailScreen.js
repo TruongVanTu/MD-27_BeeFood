@@ -32,8 +32,11 @@ const ProductDetailScreen = ({ navigation, route }) => {
   const [productfavorite, setproductfavorite] = useState(false)
   const dispatchproduct = useDispatch();
   const products = useSelector(state => state.products);
+  const [isExpanded, setIsExpanded] = useState(false);
 
-
+  const toggleDescription = () => {
+    setIsExpanded(!isExpanded); // Chuyển đổi trạng thái giữa mở rộng và thu gọn
+  };
   console.log(product.average);
 
   const [data, setData] = useState('');
@@ -127,7 +130,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
     const storedData = await AsyncStorage.getItem('_id');
     console.log("id user", storedData);
     if (!newComment || newComment.trim() === "") {
-      
+
       Toast.show({
         type: 'error',
         text1: 'Người dùng phải nhập bình luận, không được để trống!'
@@ -528,7 +531,20 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
           {/* Product description */}
           <View style={styles.descriptionContainer}>
-            <Text style={styles.description}>{product.description}</Text>
+            <Text
+              style={styles.description}
+              numberOfLines={isExpanded ? undefined : 4} // Hiển thị 4 dòng nếu không mở rộng
+              ellipsizeMode="tail" // Thêm "..." nếu bị cắt
+            >
+              {product.description}
+            </Text>
+            {product.description.length > 100 && ( // Chỉ hiển thị nút nếu mô tả dài
+              <TouchableOpacity onPress={toggleDescription}>
+                <Text style={styles.seeMore}>
+                  {isExpanded ? 'Thu gọn' : 'Xem thêm'}
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
 
 
@@ -652,10 +668,10 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
         {/* Initialize Toast container */}
         {/* <Toast ref={(ref) => Toast.setRef(ref)} /> */}
-      </View>
+      </View >
 
       <View></View>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 
   return isLoading ? renderLoading() : renderProductDetails();
@@ -664,6 +680,18 @@ const ProductDetailScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  description: {
+    fontSize: 16,
+    color: '#000',
+    lineHeight: 24, // Tăng khoảng cách giữa các dòng
+  },
+  seeMore: {
+    color: '#007AFF',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginTop: 5,
+    marginLeft:8
   },
   header: {
     height: 60,
@@ -708,8 +736,7 @@ const styles = StyleSheet.create({
     color: 'green',
   },
   descriptionContainer: {
-    padding: 8, alignItems: 'center',
-    flexDirection: 'row'
+    padding: 8
   },
   description: {
     marginLeft: 10,

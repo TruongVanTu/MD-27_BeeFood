@@ -23,11 +23,11 @@ const PayScreen = ({ route, navigation }) => {
   // ====== Thêm state để lưu toạ độ nhà hàng ======
   const [restaurantCoordinates, setRestaurantCoordinates] = useState({ latitude: null, longitude: null });
   const [isFetchingRestaurant, setIsFetchingRestaurant] = useState(true);
+  const [deliveryFee, setDeliveryFee] = useState(0);
 
   const [totalproduct, settotalproduct] = useState(0);
   const [orderData, setOrderData] = useState({});
   const [text, setText] = useState('');
-  const deliveryFee = 0;
   const [discount, setDiscount] = useState(0);
   const [IdVoucher, setDataIdVoucher] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('cash');
@@ -182,6 +182,7 @@ const PayScreen = ({ route, navigation }) => {
       address: address,
       toltalprice: totalPrice + deliveryFee - discount,
       phuongthucthanhtoan: paymentMethod,
+      deliveryFee,
       status: 0,
       notes: text,
       voucherId: IdVoucher,
@@ -194,6 +195,7 @@ const PayScreen = ({ route, navigation }) => {
         quantity: product.quantity,
         price: product.price,
       })),
+      deliveryFee, // Thêm phí giao hàng
     };
 
     return orderData;
@@ -233,6 +235,19 @@ const PayScreen = ({ route, navigation }) => {
       });
     }
   };
+
+
+  const calculateDeliveryFee = (distanceInKm) => {
+    if (distanceInKm <= 3) {
+      return 5000;
+    } else if (distanceInKm > 3 && distanceInKm <= 7) {
+      return 10000;
+    } else if (distanceInKm > 7 && distanceInKm <= 10) {
+      return 20000;
+    }
+    return 0; // Không áp dụng nếu ngoài phạm vi
+  };
+
 
   // Khi người dùng bấm đặt hàng
   const handleOrderPress = () => {
@@ -293,6 +308,12 @@ const PayScreen = ({ route, navigation }) => {
       });
       return; // Không cho tiến hành đặt hàng
     }
+
+    const calculatedDeliveryFee = calculateDeliveryFee(distanceInKm);
+    console.log('Calculated Delivery Fee:', calculatedDeliveryFee);
+
+    // Lưu phí giao hàng vào state
+    setDeliveryFee(calculatedDeliveryFee);
 
     // Nếu khoảng cách hợp lệ, tạo dữ liệu và tiếp tục
     const newOrderData = createOrderData();
@@ -359,6 +380,26 @@ const PayScreen = ({ route, navigation }) => {
 
   // Một số tính toán hiển thị
   const ordertotalPrice = totalproduct + deliveryFee - discount;
+
+  // Tự động tính phí giao hàng khi vị trí thay đổi
+  useEffect(() => {
+    if (userLocation && restaurantCoordinates.latitude && restaurantCoordinates.longitude) {
+      const { latitude: userLat, longitude: userLng } = userLocation;
+      const { latitude: restaurantLat, longitude: restaurantLng } = restaurantCoordinates;
+
+      // Tính khoảng cách giữa nhà hàng và người dùng
+      const distanceInKm = getDistanceInKm(userLat, userLng, restaurantLat, restaurantLng);
+      console.log('Updated Distance =', distanceInKm, 'km');
+
+      // Tính phí giao hàng dựa trên khoảng cách
+      const calculatedDeliveryFee = calculateDeliveryFee(distanceInKm);
+      console.log('Updated Delivery Fee:', calculatedDeliveryFee);
+
+      // Cập nhật phí giao hàng
+      setDeliveryFee(calculatedDeliveryFee);
+    }
+  }, [userLocation, restaurantCoordinates]);
+
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

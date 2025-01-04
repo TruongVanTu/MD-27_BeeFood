@@ -164,80 +164,161 @@ const Menu = ({ navigation }) => {
 };
 
 const Restaurant = ({ navigation }) => {
-  const [datarestauran, setdatarestauran] = useState([])
+  const [datarestauran, setdatarestauran] = useState([]);
+  const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchLocationAndRestaurants = async () => {
       try {
-        const response = await fetch(URL+'api/restaurant/getAll');
+        // Lấy vị trí hiện tại của người dùng
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          console.warn('Quyền truy cập vị trí bị từ chối.');
+          return;
+        }
+
+        let location = await Location.getCurrentPositionAsync({});
+        setUserLocation(location.coords);
+
+        // Lấy danh sách nhà hàng
+        const response = await fetch(URL + 'api/restaurant/getAll');
         const jsonData = await response.json();
-        const data = jsonData.data;
-        let filterRestaurnats = data.filter(datarestaurnat => datarestaurnat.role === "user");
-        setdatarestauran(filterRestaurnats);
+        const data = jsonData.data.filter(item => item.role === "user");
+
+        // Tính khoảng cách và sắp xếp
+        const restaurantsWithDistance = data.map(restaurant => {
+          const distance = calculateDistance(
+            location.coords.latitude,
+            location.coords.longitude,
+            restaurant.latitude,
+            restaurant.longitude
+          );
+          return { ...restaurant, distance };
+        });
+
+        restaurantsWithDistance.sort((a, b) => a.distance - b.distance);
+        setdatarestauran(restaurantsWithDistance);
       } catch (error) {
         console.error(error);
       }
     };
 
-    fetchData();
-  }, [])
+    fetchLocationAndRestaurants();
+  }, []);
+
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // bán kính Trái đất trong km
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // khoảng cách tính bằng km
+    return distance;
+  };
 
   return (
     <View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 15, marginVertical: 8 }}>
-        <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#616161' }}>Cơ Sở BeeFood</Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginHorizontal: 15,
+          marginVertical: 8,
+        }}
+      >
+        <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#616161' }}>
+          Nhà hàng quanh đây
+        </Text>
         <TouchableOpacity onPress={() => navigation.navigate('AllRestaurant')}>
           <Text style={{ color: '#007AFF' }}>Xem tất cả</Text>
         </TouchableOpacity>
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {datarestauran.map((data, index) => (
-          <View style={{ width: width * 0.65, marginHorizontal: 10, marginTop: 15 }} key={data._id}>
-            <TouchableOpacity onPress={() => navigation.navigate('Restaurant', { restaurant: data._id })}>
+          <View
+            style={{
+              width: width * 0.65,
+              marginHorizontal: 10,
+              marginTop: 15,
+            }}
+            key={data._id}
+          >
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('Restaurant', { restaurant: data._id })
+              }
+            >
               <View>
-                <Image 
-                  source={{ uri: data.image }} 
-                  style={{ 
-                    width: '100%', 
-                    height: height * 0.25, 
-                    borderTopLeftRadius: 10, 
-                    borderTopRightRadius: 10 
-                  }} 
-                  resizeMode="cover" 
+                <Image
+                  source={{ uri: data.image }}
+                  style={{
+                    width: '100%',
+                    height: height * 0.25,
+                    borderTopLeftRadius: 10,
+                    borderTopRightRadius: 10,
+                  }}
+                  resizeMode="cover"
                 />
               </View>
-              <View 
-                style={{ 
-                  flexDirection: 'row', 
-                  alignItems: 'center', 
-                  backgroundColor: '#EEEEEE', 
-                  padding: 10, 
-                  borderBottomLeftRadius: 10, 
-                  borderBottomRightRadius: 10, 
-                  marginBottom:10
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  backgroundColor: '#EEEEEE',
+                  padding: 10,
+                  borderBottomLeftRadius: 10,
+                  borderBottomRightRadius: 10,
+                  marginBottom: 10,
                 }}
               >
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#000000' }}>{data.name}</Text>
-                  <Text style={{ fontWeight: 'bold', color: '#000000' }}>{data.timeon} AM - {data.timeoff} PM</Text>
-                  <Text style={{ color: '#000000' }}>{data.address}</Text>
+                  <Text
+                    style={{ fontWeight: 'bold', fontSize: 18, color: '#000000' }}
+                  >
+                    {data.name}
+                  </Text>
+                  <Text style={{ fontWeight: 'bold', color: '#000000' }}>
+                    {data.timeon} AM - {data.timeoff} PM
+                  </Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ flex: 1 }}>
+                      <Text
+                        style={{ color: '#000000', width: 135 }}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                      >
+                        {data.address}
+                      </Text>
+                    </View>
+                    <Text style={{ color: '#000000', marginLeft: 8 }}>
+                      {data.distance.toFixed(2)} km
+                    </Text>
+                  </View>
                 </View>
-                <TouchableOpacity 
-                  onPress={() => navigation.navigate('Restaurant', { restaurant: data._id })} 
-                  style={{ 
-                    backgroundColor: '#FFFFFF', 
-                    width: 35, 
-                    height: 35, 
-                    alignItems: 'center', 
-                    justifyContent: 'center', 
-                    borderRadius: 17.5 
+                {/* <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('Restaurant', { restaurant: data._id })
+                  }
+                  style={{
+                    backgroundColor: '#FFFFFF',
+                    width: 35,
+                    height: 35,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 17.5,
                   }}
                 >
-                  <Image 
-                    source={require('./../Image/right_arrow.png')} 
-                    style={{ width: 15, height: 15 }} 
+                  <Image
+                    source={require('./../Image/right_arrow.png')}
+                    style={{ width: 15, height: 15 }}
                   />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </TouchableOpacity>
           </View>
@@ -245,7 +326,8 @@ const Restaurant = ({ navigation }) => {
       </ScrollView>
     </View>
   );
-}
+};
+
 
 const truncateString = (str, num) => {
   if (str.length > num) {
@@ -257,17 +339,62 @@ const truncateString = (str, num) => {
 
 const Goiymonan = ({ navigation }) => {
   const [datamonangoiy, setdatamonan] = useState([]);
+  const [userLocation, setUserLocation] = useState(null);
+
+  useEffect(() => {
+    const fetchUserLocation = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.warn('Quyền truy cập vị trí bị từ chối.');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setUserLocation(location.coords); // Lưu tọa độ người dùng
+    };
+
+    fetchUserLocation();
+  }, []);
+
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Bán kính Trái đất (km)
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Khoảng cách tính bằng km
+  };
+
 
   const fetchData = async () => {
     try {
       const response = await fetch(URL + 'api/getTop');
       const jsonData = await response.json();
-      const sortedData = jsonData.sort((a, b) => b.likeCount - a.likeCount);
 
-      // Kiểm tra dữ liệu trước khi thiết lập state
-      console.log('Dữ liệu từ API:', sortedData);
+      if (userLocation) {
+        const dataWithDistance = jsonData.map(product => {
+          const { restaurantId } = product;
+          if (restaurantId && restaurantId.latitude && restaurantId.longitude) {
+            const distance = calculateDistance(
+              userLocation.latitude,
+              userLocation.longitude,
+              restaurantId.latitude,
+              restaurantId.longitude
+            );
+            return { ...product, distance };
+          }
+          return { ...product, distance: null };
+        });
 
-      setdatamonan(sortedData);
+        setdatamonan(dataWithDistance);
+      } else {
+        setdatamonan(jsonData);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -306,11 +433,16 @@ const Goiymonan = ({ navigation }) => {
               />
               <View style={{ flexDirection: 'column', paddingLeft: 10, marginLeft: 10 }}>
                 <Text style={{ fontWeight: '600', fontSize: 15, color: '#000000', marginTop: 5 }}>
-                  Tên món ăn: {truncateString(data.name, 13)}
+                  Tên món ăn: {truncateString(data.name, 20)}
                 </Text>
-                <Text style={{ paddingBottom: 5, paddingTop: 5, fontWeight: '600', color: '#000000' }}>
-                  Nhà hàng: {data.restaurantId && data.restaurantId.name ? truncateString(data.restaurantId.name, 18) : 'Đang cập nhật...'}
-                </Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Text style={{ paddingBottom: 5, paddingTop: 5, fontWeight: '600', color: '#000000' }}>
+                    Nhà hàng: {data.restaurantId && data.restaurantId.name ? truncateString(data.restaurantId.name, 18) : 'Đang cập nhật...'}
+                  </Text>
+                  <Text style={{ color: '#000000', fontWeight: '600', marginRight: 8, marginLeft:100 }}>
+                    {data.distance ? `${data.distance.toFixed(2)} km` : 'Đang tính toán...'}
+                  </Text>
+                </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Image
                     source={require("./../Image/heart_1.png")}
