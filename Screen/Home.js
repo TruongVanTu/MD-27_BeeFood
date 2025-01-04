@@ -371,44 +371,56 @@ const Goiymonan = ({ navigation }) => {
   };
 
 
-  const fetchData = async () => {
-    try {
-      const response = await fetch(URL + 'api/getTop');
-      const jsonData = await response.json();
-
-      if (userLocation) {
-        const dataWithDistance = jsonData.map(product => {
-          const { restaurantId } = product;
-          if (restaurantId && restaurantId.latitude && restaurantId.longitude) {
-            const distance = calculateDistance(
-              userLocation.latitude,
-              userLocation.longitude,
-              restaurantId.latitude,
-              restaurantId.longitude
-            );
-            return { ...product, distance };
-          }
-          return { ...product, distance: null };
-        });
-
-        setdatamonan(dataWithDistance);
-      } else {
-        setdatamonan(jsonData);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   useEffect(() => {
-    fetchData();
+    const fetchUserLocationAndData = async () => {
+      try {
+        // Lấy vị trí người dùng
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          console.warn('Quyền truy cập vị trí bị từ chối.');
+          return;
+        }
+
+        let location = await Location.getCurrentPositionAsync({});
+        setUserLocation(location.coords); // Lưu vị trí người dùng
+
+        // Gọi API sau khi đã có vị trí
+        const response = await fetch(URL + 'api/getTop');
+        const jsonData = await response.json();
+
+        if (location.coords) {
+          const dataWithDistance = jsonData.map(product => {
+            const { restaurantId } = product;
+            if (restaurantId && restaurantId.latitude && restaurantId.longitude) {
+              const distance = calculateDistance(
+                location.coords.latitude,
+                location.coords.longitude,
+                restaurantId.latitude,
+                restaurantId.longitude
+              );
+              return { ...product, distance };
+            }
+            return { ...product, distance: null }; // Nếu không có tọa độ
+          });
+
+          // Sắp xếp dữ liệu theo số lượt yêu thích
+          const sortedData = dataWithDistance.sort((a, b) => b.likeCount - a.likeCount);
+
+          setdatamonan(sortedData);
+        } else {
+          // Sắp xếp nếu không có vị trí người dùng
+          const sortedData = jsonData.sort((a, b) => b.likeCount - a.likeCount);
+          setdatamonan(sortedData);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUserLocationAndData();
   }, []);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchData();
-    }, [])
-  );
+
 
   return (
     <View style={{ backgroundColor: '#f1f1f1' }}>
@@ -416,9 +428,9 @@ const Goiymonan = ({ navigation }) => {
         <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#616161' }}>
           Gợi ý dành cho bạn
         </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('AllProducts')}>
+        {/* <TouchableOpacity onPress={() => navigation.navigate('AllProducts')}>
           <Text>Xem tất cả</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
         {datamonangoiy.map((data, index) => (
@@ -439,7 +451,7 @@ const Goiymonan = ({ navigation }) => {
                   <Text style={{ paddingBottom: 5, paddingTop: 5, fontWeight: '600', color: '#000000' }}>
                     Nhà hàng: {data.restaurantId && data.restaurantId.name ? truncateString(data.restaurantId.name, 18) : 'Đang cập nhật...'}
                   </Text>
-                  <Text style={{ color: '#000000', fontWeight: '600', marginRight: 8, marginLeft:100 }}>
+                  <Text style={{ color: '#000000', fontWeight: '600', marginRight: 8, marginLeft: 100 }}>
                     {data.distance ? `${data.distance.toFixed(2)} km` : 'Đang tính toán...'}
                   </Text>
                 </View>
