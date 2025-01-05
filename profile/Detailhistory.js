@@ -12,9 +12,6 @@ const Detailhistory = ({ route, navigation }) => {
   const { orderId } = route.params; // Get the orderId passed via navigation
   const [orderDetails, setOrderDetails] = useState(null);
   const deliveryFee = 0;
-  const { product } = route.params;
-    const [comments, setComments] = useState([]);
-    const [newComment, setNewComment] = useState('');
   const discount = 0;
   const [showRating, setShowRating] = useState(false);
   const [starRating, setStarRating] = useState(5);
@@ -54,81 +51,9 @@ const Detailhistory = ({ route, navigation }) => {
     if (!orderDetails) { // Chỉ fetch khi orderDetails là null hoặc undefined
       fetchOrderDetails();
     }
-    fetchComments();
   }, [orderId]);
     
-  const fetchComments = async () => {
-      try {
-        let response = await fetch(URL + 'api/comment/getAll');
-        let jsonResponse = await response.json();
-        if (response.status === 200 || response.status === 304) {
-          // Lọc các bình luận dựa trên idProduct._id
-          let filteredComments = jsonResponse.data.filter(comment =>
-            comment.idProduct?._id === product?._id);
-          console.log("vippp ", filteredComments);
-          console.log("vippp222 ", product._id);
-  
-          if (filteredComments.length > 0) {
-            setComments(filteredComments);
-          }
-        } else {
-          Toast.show({
-            type: 'error',
-            text1: 'Lỗi!',
-            text2: jsonResponse.msg || 'Không thể lấy dữ liệu từ server',
-          });
-        }
-      } catch (error) {
-        console.log("vippp 4444", error);
-        Toast.show({
-          type: 'error',
-          text1: 'Lỗi!',
-          text2: error.message || 'Không thể kết nối đến server',
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    const submitComment = async () => {
-      console.log("product ì", product._id);
-      const storedData = await AsyncStorage.getItem('_id');
-      console.log("id user", storedData);
-      if (!newComment || newComment.trim() === "") {
-  
-        Toast.show({
-          type: 'error',
-          text1: 'Người dùng phải nhập bình luận, không được để trống!'
-  
-        })
-        return;
-      }
-      const apiUrl = URL + 'api/comment/create';
-      fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          idProduct: product._id,
-          idUser: storedData, // id user
-          title: newComment
-        })
-      })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error("Lỗi mạng hoặc máy chủ");
-          }
-          return response.json();
-        })
-        .then(data => {
-          setComments(prevComments => [...prevComments, data.comment]);
-          setNewComment('');
-          fetchComments();
-          console.log("idProduct ", product._id);
-        })
-        .catch(error => console.error("Có lỗi khi thêm bình luận", error));
-    };
+    
   const calculateTotalPurchase = (products) => {
     return products.reduce((acc, product) => acc + (product.price * product.quantity), 0);
   };
@@ -265,7 +190,7 @@ const Detailhistory = ({ route, navigation }) => {
                         source={require("./../Image//downarrow.png")}
                         style={styles.icon}
                       />
-                       <View style={styles.commentSection}>
+                       {/* <View style={styles.commentSection}>
                                   <TextInput
                                     placeholder="Nhập bình luận..."
                                     style={styles.commentInput}
@@ -282,16 +207,14 @@ const Detailhistory = ({ route, navigation }) => {
                                     />
                                   </TouchableOpacity>
                                   <ScrollView style={styles.scrollView}>
-            {comments.map((comment, index) => (
-              <CommentItem
-                key={index}
-                username={comment.idUser.username}
-                title={comment.title}
-                avatar={comment.idUser.avatar}
-              />
-            ))}
-          </ScrollView>
-                                </View>
+  {comments.map((comment, index) => (
+    <View key={index} style={styles.commentItem}>
+      <Text style={styles.commentUsername}>{comment.idUser.username}</Text>
+      <Text style={styles.commentTitle}>{comment.title}</Text>
+    </View>
+  ))}
+</ScrollView>
+                                </View> */}
                     </View>
                   </TouchableOpacity>
                   {showRating && (

@@ -614,10 +614,11 @@ const ProductDetailScreen = ({ navigation, route }) => {
             >
               <Text style={styles.DanhgiaTitle}>Đi đến nhà hàng</Text>
             </TouchableOpacity>
+            
           </View>
 
           {/* Comments section */}
-          {/* <View style={styles.commentSection}>
+          <View style={styles.commentSection}>
             <TextInput
               placeholder="Nhập bình luận..."
               style={styles.commentInput}
@@ -633,7 +634,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
                 style={styles.sendIcon}
               />
             </TouchableOpacity>
-          </View> */}
+          </View>
           <ScrollView style={styles.scrollView}>
             {comments.map((comment, index) => (
               <CommentItem
