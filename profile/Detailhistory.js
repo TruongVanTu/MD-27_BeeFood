@@ -1,5 +1,5 @@
 import { React, useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text,TextInput, Image, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import ToolBar from '../components/ToolBar';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,10 +12,13 @@ const Detailhistory = ({ route, navigation }) => {
   const { orderId } = route.params; // Get the orderId passed via navigation
   const [orderDetails, setOrderDetails] = useState(null);
   const deliveryFee = 0;
+  const { product } = route.params;
+    const [comments, setComments] = useState([]);
+    const [newComment, setNewComment] = useState('');
   const discount = 0;
   const [showRating, setShowRating] = useState(false);
   const [starRating, setStarRating] = useState(5);
-
+  
   // Lấy userId từ AsyncStorage
   const getStatusLabel = (status) => {
     switch (status) {
@@ -34,25 +37,98 @@ const Detailhistory = ({ route, navigation }) => {
     }
   };
 
-
+  
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
-        console.log('id:', orderId);
         const response = await fetch(`${URL}api/don-hang/${orderId}`);
         const data = await response.json();
-        console.log('data:', data);
-        setOrderDetails(data); // Lưu trữ đối tượng JSON trực tiếp
+        setOrderDetails(data);
       } catch (error) {
         console.error('Error fetching order details:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
     console.log('done', orderDetails);
     if (!orderDetails) { // Chỉ fetch khi orderDetails là null hoặc undefined
       fetchOrderDetails();
     }
+    fetchComments();
   }, [orderId]);
-
+    
+  const fetchComments = async () => {
+      try {
+        let response = await fetch(URL + 'api/comment/getAll');
+        let jsonResponse = await response.json();
+        if (response.status === 200 || response.status === 304) {
+          // Lọc các bình luận dựa trên idProduct._id
+          let filteredComments = jsonResponse.data.filter(comment =>
+            comment.idProduct?._id === product?._id);
+          console.log("vippp ", filteredComments);
+          console.log("vippp222 ", product._id);
+  
+          if (filteredComments.length > 0) {
+            setComments(filteredComments);
+          }
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: 'Lỗi!',
+            text2: jsonResponse.msg || 'Không thể lấy dữ liệu từ server',
+          });
+        }
+      } catch (error) {
+        console.log("vippp 4444", error);
+        Toast.show({
+          type: 'error',
+          text1: 'Lỗi!',
+          text2: error.message || 'Không thể kết nối đến server',
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    const submitComment = async () => {
+      console.log("product ì", product._id);
+      const storedData = await AsyncStorage.getItem('_id');
+      console.log("id user", storedData);
+      if (!newComment || newComment.trim() === "") {
+  
+        Toast.show({
+          type: 'error',
+          text1: 'Người dùng phải nhập bình luận, không được để trống!'
+  
+        })
+        return;
+      }
+      const apiUrl = URL + 'api/comment/create';
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          idProduct: product._id,
+          idUser: storedData, // id user
+          title: newComment
+        })
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Lỗi mạng hoặc máy chủ");
+          }
+          return response.json();
+        })
+        .then(data => {
+          setComments(prevComments => [...prevComments, data.comment]);
+          setNewComment('');
+          fetchComments();
+          console.log("idProduct ", product._id);
+        })
+        .catch(error => console.error("Có lỗi khi thêm bình luận", error));
+    };
   const calculateTotalPurchase = (products) => {
     return products.reduce((acc, product) => acc + (product.price * product.quantity), 0);
   };
@@ -189,6 +265,33 @@ const Detailhistory = ({ route, navigation }) => {
                         source={require("./../Image//downarrow.png")}
                         style={styles.icon}
                       />
+                       <View style={styles.commentSection}>
+                                  <TextInput
+                                    placeholder="Nhập bình luận..."
+                                    style={styles.commentInput}
+                                    multiline
+                                    onChangeText={(text) => setNewComment(text)}
+                                    value={newComment}
+                                  />
+                                  <TouchableOpacity onPress={submitComment}>
+                                    <Icon
+                                      name="send"
+                                      size={24}
+                                      color="#319AB4"
+                                      style={styles.sendIcon}
+                                    />
+                                  </TouchableOpacity>
+                                  <ScrollView style={styles.scrollView}>
+            {comments.map((comment, index) => (
+              <CommentItem
+                key={index}
+                username={comment.idUser.username}
+                title={comment.title}
+                avatar={comment.idUser.avatar}
+              />
+            ))}
+          </ScrollView>
+                                </View>
                     </View>
                   </TouchableOpacity>
                   {showRating && (
