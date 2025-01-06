@@ -74,7 +74,7 @@ const ProductsFavorite = ({navigation}) => {
             
                   <Text style={{paddingBottom: 5, paddingTop: 5, fontWeight: 'bold', color: '#616161' }}>Nhà hàng: {item.restaurantId.name}</Text>
                 </View>
-                <Text style={{ color: '#616161', width: 0.6 * width, fontWeight: 'bold', paddingRight: 15 }} numberOfLines={4}>Mô tả: {item.description}</Text>
+                <Text style={{ color: '#616161', width: 0.6 * width, fontWeight: 'bold', paddingRight: 15 }} numberOfLines={2}>Mô tả: {item.description}</Text>
               </View>
             </TouchableOpacity>
 

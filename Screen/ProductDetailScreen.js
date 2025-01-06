@@ -33,6 +33,11 @@ const ProductDetailScreen = ({ navigation, route }) => {
   const dispatchproduct = useDispatch();
   const products = useSelector(state => state.products);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [canComment, setCanComment] = useState(false);
+  const [hasCommented, setHasCommented] = useState(false);
+  const [editingComment, setEditingComment] = useState(null); // Lưu trữ bình luận đang được chỉnh sửa
+
+
 
   const toggleDescription = () => {
     setIsExpanded(!isExpanded); // Chuyển đổi trạng thái giữa mở rộng và thu gọn
@@ -55,6 +60,28 @@ const ProductDetailScreen = ({ navigation, route }) => {
     };
     fetchData();
 
+  }, []);
+
+  useEffect(() => {
+    const checkUserCommented = async () => {
+      const storedUserId = await AsyncStorage.getItem('_id');
+      const userAlreadyCommented = comments.some(comment => comment.idUser._id === storedUserId);
+      setHasCommented(userAlreadyCommented);
+    };
+
+    checkUserCommented();
+  }, [comments]);
+
+
+  useEffect(() => {
+    const checkUserPurchaseStatus = async () => {
+      const storedUserId = await AsyncStorage.getItem('_id');
+      const purchased = await hasPurchasedProduct(product._id, storedUserId);
+      setCanComment(purchased); // Cập nhật trạng thái dựa trên kết quả
+    };
+
+    checkUserPurchaseStatus();
+    fetchComments();
   }, []);
 
 
@@ -125,20 +152,50 @@ const ProductDetailScreen = ({ navigation, route }) => {
     }
   };
 
-  const submitComment = async () => {
-    console.log("product ì", product._id);
-    const storedData = await AsyncStorage.getItem('_id');
-    console.log("id user", storedData);
-    if (!newComment || newComment.trim() === "") {
+  const hasPurchasedProduct = async (productId, userId) => {
+    try {
+      const response = await fetch(`${URL}api/orders/getOrdersByUser/${userId}`);
+      const jsonResponse = await response.json();
 
+      // Kiểm tra nếu API trả về lỗi hoặc không có lịch sử đơn hàng
+      if (!jsonResponse || jsonResponse.msg) {
+        // console.warn("Không có lịch sử đơn hàng hoặc lỗi từ API:", jsonResponse.msg);
+        return false; // Người dùng chưa mua sản phẩm
+      }
+
+      // Đảm bảo dữ liệu trả về là một mảng
+      if (!Array.isArray(jsonResponse)) {
+        console.error("Dữ liệu đơn hàng không hợp lệ:", jsonResponse);
+        return false;
+      }
+
+      // Kiểm tra sản phẩm có trong danh sách đơn hàng
+      const purchased = jsonResponse.some(order =>
+        order.products.some(product => product.productId === productId)
+      );
+      return purchased;
+    } catch (error) {
+      console.error("Error checking purchase status:", error);
+      return false; // Trả về false nếu có lỗi
+    }
+  };
+
+
+
+
+  const submitComment = async () => {
+    console.log("product id:", product._id);
+
+    if (!newComment || newComment.trim() === "") {
       Toast.show({
         type: 'error',
-        text1: 'Người dùng phải nhập bình luận, không được để trống!'
-
-      })
+        text1: 'Người dùng phải nhập bình luận, không được để trống!',
+      });
       return;
     }
+
     const isLogin = await AsyncStorage.getItem('isLogin');
+    const storedUserId = await AsyncStorage.getItem('_id');
 
     if (isLogin === 'false') {
       setNewComment('');
@@ -160,12 +217,29 @@ const ProductDetailScreen = ({ navigation, route }) => {
       return;
     }
 
+    // Kiểm tra xem người dùng đã bình luận sản phẩm này chưa
+    const userAlreadyCommented = comments.some(comment => comment.idUser._id === storedUserId);
+    if (userAlreadyCommented) {
+      Toast.show({
+        type: 'error',
+        text1: 'Bạn chỉ có thể bình luận một lần cho sản phẩm này!',
+      });
+      return;
+    }
 
+    // Kiểm tra xem người dùng đã mua sản phẩm này chưa
+    const purchased = await hasPurchasedProduct(product._id, storedUserId);
 
-    const apiUrl = URL + 'api/comment/create';
+    if (!purchased) {
+      Alert.alert(
+        "Thông báo",
+        "Bạn chỉ có thể bình luận nếu đã mua sản phẩm này.",
+        [{ text: "OK", style: "cancel" }]
+      );
+      return;
+    }
 
-
-
+    const apiUrl = `${URL}api/comment/create`;
 
     fetch(apiUrl, {
       method: 'POST',
@@ -175,24 +249,27 @@ const ProductDetailScreen = ({ navigation, route }) => {
       },
       body: JSON.stringify({
         idProduct: product._id,
-        idUser: storedData, // id user
-        title: newComment
-      })
+        idUser: storedUserId,
+        title: newComment,
+      }),
     })
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
           throw new Error("Lỗi mạng hoặc máy chủ");
         }
         return response.json();
       })
-      .then(data => {
-        setComments(prevComments => [...prevComments, data.comment]);
+      .then((data) => {
+        setComments((prevComments) => [...prevComments, data.comment]);
         setNewComment('');
         fetchComments();
-        console.log("idProduct ", product._id);
+        console.log("Bình luận thành công:", data);
       })
-      .catch(error => console.error("Có lỗi khi thêm bình luận", error));
+      .catch((error) =>
+        console.error("Có lỗi khi thêm bình luận:", error)
+      );
   };
+
 
 
 
@@ -481,6 +558,51 @@ const ProductDetailScreen = ({ navigation, route }) => {
       });
   }
 
+  const saveEditedComment = async (commentId) => {
+    try {
+      const response = await fetch(`${URL}api/comment/update/${commentId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title: editingComment.text }),
+      });
+
+      if (response.ok) {
+        const updatedComment = await response.json();
+        setComments((prevComments) =>
+          prevComments.map((comment) =>
+            comment._id === commentId
+              ? { ...comment, title: editingComment.text } // Sử dụng nội dung mới
+              : comment
+          )
+        );
+        setEditingComment(null);
+        Toast.show({
+          type: 'success',
+          text1: 'Bình luận đã được cập nhật!',
+        });
+      } else {
+        const errorData = await response.json();
+        console.error('Lỗi cập nhật bình luận:', errorData.msg);
+        Toast.show({
+          type: 'error',
+          text1: 'Lỗi!',
+          text2: errorData.msg || 'Không thể cập nhật bình luận',
+        });
+      }
+    } catch (error) {
+      console.error('Error updating comment:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Lỗi!',
+        text2: 'Không thể kết nối đến server',
+      });
+    }
+  };
+
+
+
 
   const renderLoading = () => (
     <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -619,31 +741,60 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
           {/* Comments section */}
           <View style={styles.commentSection}>
-            <TextInput
-              placeholder="Nhập bình luận..."
-              style={styles.commentInput}
-              multiline
-              onChangeText={(text) => setNewComment(text)}
-              value={newComment}
-            />
-            <TouchableOpacity onPress={submitComment}>
-              <Icon
-                name="send"
-                size={24}
-                color="#319AB4"
-                style={styles.sendIcon}
-              />
-            </TouchableOpacity>
+            {hasCommented ? (
+              <Text style={styles.alreadyCommentedText}>
+                Bạn đã đánh giá sản phẩm này.
+              </Text>
+            ) : canComment ? (
+              <>
+                <TextInput
+                  placeholder="Nhập bình luận..."
+                  style={styles.commentInput}
+                  multiline
+                  onChangeText={(text) => setNewComment(text)}
+                  value={newComment}
+                />
+                <TouchableOpacity onPress={submitComment}>
+                  <Icon name="send" size={24} color="#319AB4" style={styles.sendIcon} />
+                </TouchableOpacity>
+              </>
+            ) : (
+              <Text style={styles.noCommentText}>
+                Chỉ người dùng đã mua sản phẩm mới có thể bình luận.
+              </Text>
+            )}
           </View>
+
           <ScrollView style={styles.scrollView}>
-            {comments.map((comment, index) => (
-              <CommentItem
-                key={index}
-                username={comment.idUser.username}
-                title={comment.title}
-                avatar={comment.idUser.avatar}
-              />
-            ))}
+            {comments.map((comment, index) =>
+              editingComment?.id === comment._id ? (
+                <View style={{flexDirection:'row', alignItems:'center'}} key={index}>
+                  <TextInput
+                    style={styles.commentInput}
+                    value={editingComment.text}
+                    onChangeText={(text) =>
+                      setEditingComment((prev) => ({ ...prev, text }))
+                    }
+                  />
+                  <TouchableOpacity style={{width:40, }} onPress={() => saveEditedComment(comment._id)}>
+                    <Text style={{ color: 'blue' }}>Lưu</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => setEditingComment(null)}>
+                    <Text style={{ color: 'red' }}>Hủy</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <CommentItem
+                  key={index}
+                  username={comment.idUser.username}
+                  title={comment.title}
+                  avatar={comment.idUser.avatar}
+                  canEdit={comment.idUser._id === currentUser?._id}
+                  onEdit={() => setEditingComment({ id: comment._id, text: comment.title })}
+                />
+              )
+            )}
+
           </ScrollView>
         </ScrollView>
 
@@ -692,7 +843,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     marginTop: 5,
-    marginLeft:8
+    marginLeft: 8
   },
   header: {
     height: 60,
