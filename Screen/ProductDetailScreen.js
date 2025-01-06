@@ -34,6 +34,10 @@ const ProductDetailScreen = ({ navigation, route }) => {
   const products = useSelector(state => state.products);
   const [isExpanded, setIsExpanded] = useState(false);
   const [canComment, setCanComment] = useState(false);
+  const [hasCommented, setHasCommented] = useState(false);
+  const [editingComment, setEditingComment] = useState(null); // Lưu trữ bình luận đang được chỉnh sửa
+
+
 
   const toggleDescription = () => {
     setIsExpanded(!isExpanded); // Chuyển đổi trạng thái giữa mở rộng và thu gọn
@@ -57,6 +61,17 @@ const ProductDetailScreen = ({ navigation, route }) => {
     fetchData();
 
   }, []);
+
+  useEffect(() => {
+    const checkUserCommented = async () => {
+      const storedUserId = await AsyncStorage.getItem('_id');
+      const userAlreadyCommented = comments.some(comment => comment.idUser._id === storedUserId);
+      setHasCommented(userAlreadyCommented);
+    };
+
+    checkUserCommented();
+  }, [comments]);
+
 
   useEffect(() => {
     const checkUserPurchaseStatus = async () => {
@@ -140,18 +155,32 @@ const ProductDetailScreen = ({ navigation, route }) => {
   const hasPurchasedProduct = async (productId, userId) => {
     try {
       const response = await fetch(`${URL}api/orders/getOrdersByUser/${userId}`);
-      const orders = await response.json();
+      const jsonResponse = await response.json();
 
-      // Kiểm tra xem sản phẩm có nằm trong danh sách đơn hàng không
-      const purchased = orders.some(order =>
+      // Kiểm tra nếu API trả về lỗi hoặc không có lịch sử đơn hàng
+      if (!jsonResponse || jsonResponse.msg) {
+        // console.warn("Không có lịch sử đơn hàng hoặc lỗi từ API:", jsonResponse.msg);
+        return false; // Người dùng chưa mua sản phẩm
+      }
+
+      // Đảm bảo dữ liệu trả về là một mảng
+      if (!Array.isArray(jsonResponse)) {
+        console.error("Dữ liệu đơn hàng không hợp lệ:", jsonResponse);
+        return false;
+      }
+
+      // Kiểm tra sản phẩm có trong danh sách đơn hàng
+      const purchased = jsonResponse.some(order =>
         order.products.some(product => product.productId === productId)
       );
       return purchased;
     } catch (error) {
       console.error("Error checking purchase status:", error);
-      return false;
+      return false; // Trả về false nếu có lỗi
     }
   };
+
+
 
 
   const submitComment = async () => {
@@ -185,6 +214,16 @@ const ProductDetailScreen = ({ navigation, route }) => {
         ],
         { cancelable: false }
       );
+      return;
+    }
+
+    // Kiểm tra xem người dùng đã bình luận sản phẩm này chưa
+    const userAlreadyCommented = comments.some(comment => comment.idUser._id === storedUserId);
+    if (userAlreadyCommented) {
+      Toast.show({
+        type: 'error',
+        text1: 'Bạn chỉ có thể bình luận một lần cho sản phẩm này!',
+      });
       return;
     }
 
@@ -519,6 +558,51 @@ const ProductDetailScreen = ({ navigation, route }) => {
       });
   }
 
+  const saveEditedComment = async (commentId) => {
+    try {
+      const response = await fetch(`${URL}api/comment/update/${commentId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title: editingComment.text }),
+      });
+
+      if (response.ok) {
+        const updatedComment = await response.json();
+        setComments((prevComments) =>
+          prevComments.map((comment) =>
+            comment._id === commentId
+              ? { ...comment, title: editingComment.text } // Sử dụng nội dung mới
+              : comment
+          )
+        );
+        setEditingComment(null);
+        Toast.show({
+          type: 'success',
+          text1: 'Bình luận đã được cập nhật!',
+        });
+      } else {
+        const errorData = await response.json();
+        console.error('Lỗi cập nhật bình luận:', errorData.msg);
+        Toast.show({
+          type: 'error',
+          text1: 'Lỗi!',
+          text2: errorData.msg || 'Không thể cập nhật bình luận',
+        });
+      }
+    } catch (error) {
+      console.error('Error updating comment:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Lỗi!',
+        text2: 'Không thể kết nối đến server',
+      });
+    }
+  };
+
+
+
 
   const renderLoading = () => (
     <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -656,7 +740,11 @@ const ProductDetailScreen = ({ navigation, route }) => {
 
           {/* Comments section */}
           <View style={styles.commentSection}>
-            {canComment ? ( // Hiển thị ô nhập nếu người dùng đã mua
+            {hasCommented ? (
+              <Text style={styles.alreadyCommentedText}>
+                Bạn đã đánh giá sản phẩm này.
+              </Text>
+            ) : canComment ? (
               <>
                 <TextInput
                   placeholder="Nhập bình luận..."
@@ -675,15 +763,37 @@ const ProductDetailScreen = ({ navigation, route }) => {
               </Text>
             )}
           </View>
+
           <ScrollView style={styles.scrollView}>
-            {comments.map((comment, index) => (
-              <CommentItem
-                key={index}
-                username={comment.idUser.username}
-                title={comment.title}
-                avatar={comment.idUser.avatar}
-              />
-            ))}
+            {comments.map((comment, index) =>
+              editingComment?.id === comment._id ? (
+                <View style={{flexDirection:'row', alignItems:'center'}} key={index}>
+                  <TextInput
+                    style={styles.commentInput}
+                    value={editingComment.text}
+                    onChangeText={(text) =>
+                      setEditingComment((prev) => ({ ...prev, text }))
+                    }
+                  />
+                  <TouchableOpacity style={{width:40, }} onPress={() => saveEditedComment(comment._id)}>
+                    <Text style={{ color: 'blue' }}>Lưu</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => setEditingComment(null)}>
+                    <Text style={{ color: 'red' }}>Hủy</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <CommentItem
+                  key={index}
+                  username={comment.idUser.username}
+                  title={comment.title}
+                  avatar={comment.idUser.avatar}
+                  canEdit={comment.idUser._id === currentUser?._id}
+                  onEdit={() => setEditingComment({ id: comment._id, text: comment.title })}
+                />
+              )
+            )}
+
           </ScrollView>
         </ScrollView>
 

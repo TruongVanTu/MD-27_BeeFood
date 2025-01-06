@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-const CommentItem = ({ username, title, avatar }) => {
+const CommentItem = ({ username, title, avatar, onEdit, canEdit }) => {
   const defaultAvatar = require('../Image/usercm.png');
 
   // Xác định nguồn ảnh phù hợp
@@ -14,11 +15,14 @@ const CommentItem = ({ username, title, avatar }) => {
         <Text style={styles.username}>{username}</Text>
         <Text style={styles.commentContent}>{title}</Text>
       </View>
+      {canEdit && (
+        <TouchableOpacity onPress={onEdit} style={styles.editButton}>
+          <Icon name="edit" size={20} color="#319AB4" />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
-
-
 
 const styles = StyleSheet.create({
   commentContainer: {
@@ -46,6 +50,10 @@ const styles = StyleSheet.create({
   },
   commentContent: {
     fontSize: 16,
+  },
+  editButton: {
+    marginLeft: 10,
+    justifyContent: 'center',
   },
 });
 
