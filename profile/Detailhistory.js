@@ -1,5 +1,5 @@
 import { React, useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text,TextInput, Image, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import ToolBar from '../components/ToolBar';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,7 +15,7 @@ const Detailhistory = ({ route, navigation }) => {
   const discount = 0;
   const [showRating, setShowRating] = useState(false);
   const [starRating, setStarRating] = useState(5);
-
+  
   // Lấy userId từ AsyncStorage
   const getStatusLabel = (status) => {
     switch (status) {
@@ -34,11 +34,10 @@ const Detailhistory = ({ route, navigation }) => {
     }
   };
 
-
+  
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
-        console.log('id:', orderId);
         const response = await fetch(`${URL}api/don-hang/${orderId}`);
         const data = await response.json();
         console.log('data:', data);
@@ -52,6 +51,8 @@ const Detailhistory = ({ route, navigation }) => {
         }
       } catch (error) {
         console.error('Error fetching order details:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
     console.log('done', orderDetails);
@@ -59,7 +60,8 @@ const Detailhistory = ({ route, navigation }) => {
       fetchOrderDetails();
     }
   }, [orderId]);
-
+    
+    
   const calculateTotalPurchase = (products) => {
     return products.reduce((acc, product) => acc + (product.price * product.quantity), 0);
   };
@@ -196,6 +198,31 @@ const Detailhistory = ({ route, navigation }) => {
                         source={require("./../Image//downarrow.png")}
                         style={styles.icon}
                       />
+                       {/* <View style={styles.commentSection}>
+                                  <TextInput
+                                    placeholder="Nhập bình luận..."
+                                    style={styles.commentInput}
+                                    multiline
+                                    onChangeText={(text) => setNewComment(text)}
+                                    value={newComment}
+                                  />
+                                  <TouchableOpacity onPress={submitComment}>
+                                    <Icon
+                                      name="send"
+                                      size={24}
+                                      color="#319AB4"
+                                      style={styles.sendIcon}
+                                    />
+                                  </TouchableOpacity>
+                                  <ScrollView style={styles.scrollView}>
+  {comments.map((comment, index) => (
+    <View key={index} style={styles.commentItem}>
+      <Text style={styles.commentUsername}>{comment.idUser.username}</Text>
+      <Text style={styles.commentTitle}>{comment.title}</Text>
+    </View>
+  ))}
+</ScrollView>
+                                </View> */}
                     </View>
                   </TouchableOpacity>
                   {showRating && (

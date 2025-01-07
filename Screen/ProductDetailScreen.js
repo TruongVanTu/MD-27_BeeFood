@@ -736,6 +736,7 @@ const ProductDetailScreen = ({ navigation, route }) => {
             >
               <Text style={styles.DanhgiaTitle}>Đi đến nhà hàng</Text>
             </TouchableOpacity>
+            
           </View>
 
           {/* Comments section */}
