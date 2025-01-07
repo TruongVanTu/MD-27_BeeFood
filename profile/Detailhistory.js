@@ -11,7 +11,7 @@ import Toast from 'react-native-toast-message';
 const Detailhistory = ({ route, navigation }) => {
   const { orderId } = route.params; // Get the orderId passed via navigation
   const [orderDetails, setOrderDetails] = useState(null);
-  const deliveryFee = 0;
+  const [deliveryFee, setDeliveryFee] = useState(0);
   const discount = 0;
   const [showRating, setShowRating] = useState(false);
   const [starRating, setStarRating] = useState(5);
@@ -43,6 +43,13 @@ const Detailhistory = ({ route, navigation }) => {
         const data = await response.json();
         console.log('data:', data);
         setOrderDetails(data); // Lưu trữ đối tượng JSON trực tiếp
+
+        // Kiểm tra và đặt deliveryFee từ phản hồi API
+        if (data.deliveryFee !== undefined) {
+          setDeliveryFee(data.deliveryFee);
+        } else {
+          console.warn('deliveryFee không có trong phản hồi API.');
+        }
       } catch (error) {
         console.error('Error fetching order details:', error);
       }
