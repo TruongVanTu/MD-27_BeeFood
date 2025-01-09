@@ -181,7 +181,7 @@ const NotificationScreen = ({ navigation }) => {
     // Thiết lập polling mỗi 30 giây
     intervalRef.current = setInterval(() => {
       fetchDataHistory();
-    }, 30000); // 30000 ms = 30 giây
+    }, 5000); // 30000 ms = 30 giây
 
     // Dọn dẹp khi component unmount
     return () => {
