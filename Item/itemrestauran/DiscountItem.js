@@ -37,7 +37,7 @@ const DiscountItem = ({restaurantId}) => {
        <View style={{flexDirection:'column' }}>
 
          <Text style={{fontWeight:'bold',color:'#616161'}}>Giảm {Math.round(data.money / 1000)}k cho đơn từ { Math.round(data.limit / 1000)}k</Text>
-         <Text style={{  fontWeight:'bold' ,color:'#616161'}}>HSD: {moment(data.HSD).format('DD/MM/YYYY')}</Text>
+         <Text style={{  fontWeight:'bold' ,color:'#616161'}}>HSD: {moment(data.hsd).format('DD/MM/YYYY')}</Text>
        </View>
 
     

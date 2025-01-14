@@ -83,7 +83,7 @@ const ListVoucherModal = ({visible ,products  , setisvisible, navigation  , tota
                           Giảm {Math.round(data.money / 1000)}k cho đơn từ {Math.round(data.limit / 1000)}k
                         </Text>
                         <Text style={styles.voucherText}>
-                          HSD: {moment(data.HSD).format('DD/MM/YYYY')}
+                          HSD: {moment(data.hsd).format('DD/MM/YYYY')}
                         </Text>
                       </View>
                       <TouchableOpacity
